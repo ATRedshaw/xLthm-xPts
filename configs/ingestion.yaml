@@ -1,0 +1,29 @@
+# Vaastav's archive is sourced from the official FPL API.  This ingestion job
+# deliberately excludes the archive's Understat and other non-FPL datasets.
+
+database:
+  path: data/fpl_xpts.sqlite3
+
+raw:
+  path: data/raw/sources/vaastav
+
+source:
+  name: vaastav
+  repository: vaastav/Fantasy-Premier-League
+  ref: master
+  api_base_url: https://api.github.com
+  archive_base_url: https://codeload.github.com
+  raw_base_url: https://raw.githubusercontent.com
+  user_agent: xpts-vaastav-ingester/1.0
+  timeout_seconds: 60
+
+ingestion:
+  # Override with --season for a one-season run.
+  seasons:
+    - 2022-23
+    - 2023-24
+    - 2024-25
+    - 2025-26
+    - 2026-27
+  include_player_files: true
+  strict_validation: false
