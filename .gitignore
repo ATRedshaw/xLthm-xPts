@@ -1,2 +1,5 @@
 /plan.md
 venv/
+data/
+__pycache__/
+*.py[cod]
