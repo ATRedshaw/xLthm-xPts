@@ -16,7 +16,9 @@ def season_data(player_rows: list[dict[str, object]]) -> SeasonData:
     return SeasonData(
         season="2025-26",
         player_fixtures=pd.DataFrame(player_rows),
-        players=pd.DataFrame([{"id": 7, "code": 7007}]),
+        players=pd.DataFrame(
+            [{"id": 7, "code": 7007}, {"id": 8, "code": 8008}]
+        ),
         teams=pd.DataFrame(
             [
                 {"id": 1, "code": 101, "name": "Home"},
@@ -49,6 +51,8 @@ def player_row(**changes: object) -> dict[str, object]:
         "opponent_team": 2,
         "position": "MID",
         "was_home": True,
+        "team_h_score": 99,
+        "team_a_score": 99,
         "name": "Test Player",
         "value": 75,
         "selected": 1000,
@@ -69,6 +73,8 @@ class NormaliseSeasonTests(unittest.TestCase):
         self.assertEqual(rows.loc[0, "opponent_team_key"], "code:202")
         self.assertEqual(rows.loc[0, "gameweek"], 3)
         self.assertEqual(rows.loc[0, "price_tenths"], 75)
+        self.assertEqual(rows.loc[0, "home_goals"], 2)
+        self.assertEqual(rows.loc[0, "away_goals"], 1)
         self.assertTrue(pd.isna(rows.loc[0, "defensive_contribution"]))
 
     def test_removes_exact_source_duplicates(self) -> None:
@@ -76,6 +82,13 @@ class NormaliseSeasonTests(unittest.TestCase):
         rows = normalise_season(season_data([row, row.copy()]))
 
         self.assertEqual(len(rows), 1)
+
+    def test_excludes_assistant_manager_chip_elements(self) -> None:
+        rows = normalise_season(
+            season_data([player_row(), player_row(element=8, position="AM")])
+        )
+
+        self.assertEqual(rows["player_id"].tolist(), [7])
 
     def test_rejects_conflicting_player_fixture_duplicates(self) -> None:
         with self.assertRaisesRegex(ValueError, "conflicting rows"):

@@ -1,0 +1,13 @@
+source:
+  name: vaastav
+  base_url: https://raw.githubusercontent.com/vaastav/Fantasy-Premier-League/master/data
+  timeout_seconds: 30
+
+preprocessing:
+  seasons:
+    - 2022-23
+    - 2023-24
+    - 2024-25
+    - 2025-26
+    - 2026-27
+  output_path: data/processed/model_training.csv

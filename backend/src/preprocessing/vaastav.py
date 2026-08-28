@@ -189,6 +189,8 @@ def normalise_season(data: SeasonData) -> pd.DataFrame:
             "id": "fixture",
             "event": "fixture_gameweek",
             "kickoff_time": "fixture_kickoff_time",
+            "team_h_score": "fixture_home_goals",
+            "team_a_score": "fixture_away_goals",
         }
     )
     fixtures = fixtures.drop_duplicates("fixture", keep="last")
@@ -274,8 +276,8 @@ def normalise_season(data: SeasonData) -> pd.DataFrame:
     output["away_team_id"] = pd.to_numeric(rows["team_a"], errors="coerce").astype(
         "Int64"
     )
-    output["home_goals"] = pd.to_numeric(rows["team_h_score"], errors="coerce")
-    output["away_goals"] = pd.to_numeric(rows["team_a_score"], errors="coerce")
+    output["home_goals"] = pd.to_numeric(rows["fixture_home_goals"], errors="coerce")
+    output["away_goals"] = pd.to_numeric(rows["fixture_away_goals"], errors="coerce")
 
     for source, destination in SNAPSHOT_COLUMNS.items():
         values = rows[source] if source in rows else pd.Series(pd.NA, index=rows.index)
@@ -288,6 +290,7 @@ def normalise_season(data: SeasonData) -> pd.DataFrame:
         values = rows[column] if column in rows else pd.Series(pd.NA, index=rows.index)
         output[column] = pd.to_numeric(values, errors="coerce")
 
+    output = output[output["position"].isin({"GK", "DEF", "MID", "FWD"})]
     return output.sort_values(
         ["kickoff_time", "fixture_id", "player_id"], kind="mergesort"
     ).reset_index(drop=True)
