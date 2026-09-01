@@ -48,7 +48,7 @@ def players():
     start_gameweek, end_gameweek, _ = projection_window()
     detail = detail_argument()
     include_distribution = boolean_argument("include_distribution")
-    limit = integer_argument("limit", default=100, minimum=1, maximum=1000)
+    limit = integer_argument("limit", default=1000, minimum=1, maximum=1000)
     offset = integer_argument("offset", default=0, minimum=0, maximum=100000)
     position = request.args.get("position")
     if position:
@@ -69,18 +69,14 @@ def players():
     where = f"WHERE {' AND '.join(filters)}" if filters else ""
     rows = get_database().execute(
         f"""
-        SELECT {PLAYER_COLUMNS}, COALESCE(SUM(projection.xpts), 0) AS horizon_xpts
+        SELECT {PLAYER_COLUMNS}
         FROM players AS player
         JOIN teams AS team ON team.id = player.team_id
-        LEFT JOIN player_gameweek_projections AS projection
-          ON projection.player_id = player.id
-         AND projection.gameweek BETWEEN ? AND ?
         {where}
-        GROUP BY player.id
-        ORDER BY horizon_xpts DESC, player.name
+        ORDER BY player.id
         LIMIT ? OFFSET ?
         """,
-        [start_gameweek, end_gameweek, *values, limit, offset],
+        [*values, limit, offset],
     ).fetchall()
     result = attach_projections(
         rows,
@@ -200,7 +196,7 @@ def fixture(fixture_id: int):
         JOIN player_fixture_projections AS projection
           ON projection.player_id = player.id
         WHERE projection.fixture_id = ?
-        ORDER BY player.team_id, player.position, player.name
+        ORDER BY player.id
         """,
         (fixture_id,),
     ).fetchall()

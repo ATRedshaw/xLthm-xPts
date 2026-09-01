@@ -63,7 +63,7 @@ def projection_window() -> tuple[int, int, int]:
     remaining_gameweeks = last_gameweek - start_gameweek + 1
     gameweeks = integer_argument(
         "gameweeks",
-        default=min(5, remaining_gameweeks),
+        default=remaining_gameweeks,
         minimum=1,
         maximum=remaining_gameweeks,
     )
