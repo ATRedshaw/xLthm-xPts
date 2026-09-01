@@ -1,0 +1,46 @@
+minutes_state:
+  input_path: data/processed/model_training.csv
+  model_dir: data/models/minutes_state
+  validation_seasons:
+    - 2023-24
+    - 2024-25
+    - 2025-26
+  feature_profiles:
+    - usage_context
+    - usage_context_and_stable_market
+    - usage_context_and_market
+  random_state: 42
+  probability_temperature:
+    minimum: 0.70
+    maximum: 1.30
+    step: 0.02
+  duration_offset:
+    minimum: -8.0
+    maximum: 8.0
+    step: 0.25
+  classifier_parameter_grid:
+    learning_rate:
+      - 0.04
+      - 0.08
+    max_iter:
+      - 120
+    max_leaf_nodes:
+      - 7
+      - 15
+    min_samples_leaf:
+      - 30
+    l2_regularization:
+      - 1.0
+  duration_parameter_grid:
+    learning_rate:
+      - 0.04
+      - 0.08
+    max_iter:
+      - 120
+    max_leaf_nodes:
+      - 7
+      - 15
+    min_samples_leaf:
+      - 30
+    l2_regularization:
+      - 1.0

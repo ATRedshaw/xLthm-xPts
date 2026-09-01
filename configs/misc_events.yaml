@@ -1,0 +1,40 @@
+misc_events:
+  input_path: data/processed/model_training.csv
+  minutes_predictions_path: data/models/minutes_state/walk_forward_predictions.csv
+  model_dir: data/models/misc_events
+  validation_seasons:
+    - 2023-24
+    - 2024-25
+    - 2025-26
+  feature_profiles:
+    - event_history
+    - event_history_and_fixture
+    - event_history_fixture_and_market
+  random_state: 42
+  yellow_card_shrinkage_minutes:
+    - 0
+    - 225
+    - 450
+    - 900
+  rare_event_shrinkage_minutes:
+    - 450
+    - 900
+    - 1800
+    - 3600
+    - 7200
+    - 14400
+    - 28800
+    - 1000000000
+  parameter_grid:
+    learning_rate:
+      - 0.04
+      - 0.08
+    max_iter:
+      - 100
+    max_leaf_nodes:
+      - 7
+      - 15
+    min_samples_leaf:
+      - 30
+    l2_regularization:
+      - 1.0

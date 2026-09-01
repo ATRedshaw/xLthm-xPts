@@ -1,0 +1,32 @@
+team_score:
+  input_path: data/processed/model_training.csv
+  model_dir: data/models/team_score
+  validation_seasons:
+    - 2023-24
+    - 2024-25
+    - 2025-26
+  feature_profiles:
+    - score_form
+    - score_and_xg
+    - score_xg_and_team_identity
+  max_goals: 10
+  minimum_goal_rate: 0.05
+  maximum_goal_rate: 5.0
+  random_state: 42
+  dixon_coles_rho:
+    minimum: -0.15
+    maximum: 0.15
+    step: 0.01
+  parameter_grid:
+    learning_rate:
+      - 0.04
+      - 0.08
+    max_iter:
+      - 160
+    max_leaf_nodes:
+      - 7
+      - 15
+    min_samples_leaf:
+      - 30
+    l2_regularization:
+      - 1.0

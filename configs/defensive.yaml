@@ -1,0 +1,35 @@
+defensive:
+  input_path: data/processed/model_training.csv
+  team_predictions_path: data/models/team_score/walk_forward_team_predictions.csv
+  minutes_predictions_path: data/models/minutes_state/walk_forward_predictions.csv
+  model_dir: data/models/defensive
+  validation_seasons:
+    - 2023-24
+    - 2024-25
+    - 2025-26
+  feature_profiles:
+    - history
+    - history_and_fixture
+  random_state: 42
+  shrinkage_minutes:
+    - 0
+    - 225
+    - 450
+    - 900
+  penalty_shrinkage_minutes:
+    - 900
+    - 1800
+    - 3600
+  parameter_grid:
+    learning_rate:
+      - 0.04
+      - 0.08
+    max_iter:
+      - 100
+    max_leaf_nodes:
+      - 7
+      - 15
+    min_samples_leaf:
+      - 30
+    l2_regularization:
+      - 1.0
