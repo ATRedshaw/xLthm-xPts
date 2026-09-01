@@ -12,7 +12,7 @@ inference:
   features_path: data/inference/future_features.csv
   live_context_path: data/inference/live_context.json
   component_dir: data/inference/components
-  output_path: data/inference/xpts.json
+  database_path: data/inference/xpts.sqlite
   simulation_count: 1000
   random_state: 42
   rules:

@@ -1,4 +1,4 @@
-"""Run joint fixture simulations and save player-centric future xPts JSON."""
+"""Run joint fixture simulations and atomically replace the projection database."""
 
 from __future__ import annotations
 
@@ -10,8 +10,9 @@ from pathlib import Path
 
 import pandas as pd
 
-from .build_features import DEFAULT_CONFIG_PATH, load_settings, write_json
-from .simulation import gameweek_projection, merge_component_frames, simulate_all_fixtures
+from .build_features import DEFAULT_CONFIG_PATH, load_settings
+from .simulation import merge_component_frames, simulate_all_fixtures
+from .storage import write_projection_database
 
 
 COMPONENT_NAMES = [
@@ -36,7 +37,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--features", default=None)
     parser.add_argument("--context", default=None)
     parser.add_argument("--component-dir", default=None)
-    parser.add_argument("--output", default=None)
+    parser.add_argument("--database", default=None)
     parser.add_argument("--simulations", type=int, default=None)
     args = parser.parse_args(argv)
     settings = load_settings(args.config)
@@ -59,40 +60,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     gameweeks = sorted(
         int(value) for value in pd.to_numeric(features["gameweek"], errors="coerce").dropna().unique()
     )
-    players: dict[str, object] = {}
-    for player_id, live_player in context["players"].items():
-        future_fixtures = sorted(
-            fixture_projections.get(player_id, []),
-            key=lambda projection: (projection["kickoff_time"], projection["fixture_id"]),
-        )
-        fixtures_by_id = {projection["fixture_id"]: projection for projection in future_fixtures}
-        future_points = []
-        for gameweek in gameweeks:
-            sample = gameweek_samples.get((player_id, gameweek))
-            if sample is None:
-                gameweek_result = {
-                    "fixture_ids": [], "xpts": 0.0, "xmins": 0.0,
-                    "outcome_probabilities": {
-                        "negative_points": 0.0, "zero_points": 1.0,
-                        "two_plus_points": 0.0, "five_plus_points": 0.0,
-                        "ten_plus_points": 0.0,
-                        "percentiles": {name: 0.0 for name in ("p10", "p25", "p50", "p75", "p90")},
-                        "points_distribution": {"0": 1.0},
-                    },
-                }
-            else:
-                gameweek_result = gameweek_projection(sample)
-            future_points.append({
-                "gameweek": gameweek,
-                **gameweek_result,
-                "fixtures": [fixtures_by_id[fixture_id] for fixture_id in gameweek_result["fixture_ids"]],
-            })
-        players[player_id] = {
-            **live_player,
-            "future_points": future_points,
-            "remaining_xpts": round(sum(projection["xpts"] for projection in future_points), 4),
-        }
-    output = {
+    metadata = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "data_retrieved_at": context["retrieved_at"],
         "season": context["season"],
@@ -101,7 +69,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "random_state": int(settings["random_state"]),
         "models": manifest["models"],
         "coverage": {
-            "players": len(players),
+            "players": len(context["players"]),
             "fixtures": len(context["fixtures"]),
             "gameweeks": gameweeks,
             "skipped_fixtures": context["skipped_fixtures"],
@@ -119,11 +87,20 @@ def main(argv: Sequence[str] | None = None) -> int:
             "Player appearances are sampled independently and do not enforce an exact eleven-player starting lineup.",
             "BPS residuals are not yet conditioned on the specific goals, assists and defensive actions sampled in the same run.",
         ],
-        "players": players,
     }
-    output_path = Path(args.output or str(settings["output_path"]))
-    write_json(output_path, output)
-    print(f"Wrote xPts projections for {len(players):,} players to {output_path}")
+    database_path = write_projection_database(
+        args.database or str(settings["database_path"]),
+        context=context,
+        metadata=metadata,
+        fixture_forecasts=components["fixtures"],
+        fixture_projections=fixture_projections,
+        gameweek_samples=gameweek_samples,
+        gameweeks=gameweeks,
+    )
+    print(
+        f"Wrote xPts projections for {len(context['players']):,} players "
+        f"to {database_path}"
+    )
     return 0
 
 

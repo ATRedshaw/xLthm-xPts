@@ -94,6 +94,7 @@ def normalise_live_future_rows(
             "team_id": team_id,
             "team_code": int(team["code"]),
             "team_name": str(team["name"]),
+            "team_short_name": str(team["short_name"]),
             "status": str(player.get("status") or ""),
             "availability_probability": availability,
             "chance_of_playing_next_round": player.get("chance_of_playing_next_round"),
@@ -165,6 +166,15 @@ def normalise_live_future_rows(
         "retrieved_at": retrieved.isoformat(),
         "season": season,
         "players": live_players,
+        "teams": {
+            str(team_id): {
+                "id": team_id,
+                "code": int(team["code"]),
+                "name": str(team["name"]),
+                "short_name": str(team["short_name"]),
+            }
+            for team_id, team in teams.items()
+        },
         "fixtures": fixture_context,
         "skipped_fixtures": skipped,
     }
