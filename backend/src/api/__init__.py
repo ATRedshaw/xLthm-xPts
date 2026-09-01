@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 
 from flask import Flask, jsonify
@@ -19,7 +18,7 @@ DEFAULT_DATABASE = Path(__file__).resolve().parents[3] / "data" / "inference" / 
 def create_app(config: dict[str, object] | None = None) -> Flask:
     app = Flask(__name__)
     app.config.from_mapping(
-        PREDICTION_DATABASE=os.environ.get("XPTS_DATABASE_PATH", str(DEFAULT_DATABASE)),
+        PREDICTION_DATABASE=str(DEFAULT_DATABASE),
     )
     app.json.sort_keys = False
     if config:
