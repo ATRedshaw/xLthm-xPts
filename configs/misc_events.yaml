@@ -10,7 +10,7 @@ misc_events:
     - event_history
     - event_history_and_fixture
     - event_history_fixture_and_market
-  random_state: 42
+  random_state: 104
   yellow_card_shrinkage_minutes:
     - 0
     - 225

@@ -10,7 +10,7 @@ defensive:
   feature_profiles:
     - history
     - history_and_fixture
-  random_state: 42
+  random_state: 104
   shrinkage_minutes:
     - 0
     - 225

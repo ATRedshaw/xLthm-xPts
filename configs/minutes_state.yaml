@@ -9,7 +9,7 @@ minutes_state:
     - usage_context
     - usage_context_and_stable_market
     - usage_context_and_market
-  random_state: 42
+  random_state: 104
   probability_temperature:
     minimum: 0.70
     maximum: 1.30

@@ -91,7 +91,7 @@ def index():
                 "options": {
                     "summary": "Player identity, price, ownership, xPts, xMins and compact fixtures.",
                     "standard": "Summary plus availability, action probabilities and xPts breakdowns.",
-                    "full": "Standard plus news, expected actions, model context and outcome probabilities.",
+                    "full": "Standard plus news, expected actions and outcome probabilities.",
                 },
             },
             "include_distribution": {
@@ -115,16 +115,16 @@ def index():
             },
             "limit": {
                 "type": "integer",
-                "default": 1000,
+                "default": 9999,
                 "minimum": 1,
-                "maximum": 1000,
+                "maximum": 9999,
                 "description": "Maximum players returned; the default covers the full player list.",
             },
             "offset": {
                 "type": "integer",
                 "default": 0,
                 "minimum": 0,
-                "description": "Number of matching players to skip.",
+                "description": "Number of matching players to skip after filtering and FPL-ID ordering; this is a row count, not a player ID.",
             },
         },
         "outcome_probabilities": {
@@ -148,6 +148,7 @@ def index():
         "examples": [
             "/api/v1/players",
             "/api/v1/players?gameweeks=5&position=FWD",
+            "/api/v1/players?limit=100&offset=100",
             "/api/v1/players/411?detail=standard",
             "/api/v1/players/411?gameweeks=1&include_distribution=true",
             "/api/v1/fixtures",

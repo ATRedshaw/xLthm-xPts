@@ -14,7 +14,7 @@ inference:
   component_dir: data/inference/components
   database_path: data/inference/xpts.sqlite
   simulation_count: 1000
-  random_state: 42
+  random_state: 104
   rules:
     version: 2026-27
     appearance_under_60: 1

@@ -48,7 +48,7 @@ def players():
     start_gameweek, end_gameweek, _ = projection_window()
     detail = detail_argument()
     include_distribution = boolean_argument("include_distribution")
-    limit = integer_argument("limit", default=1000, minimum=1, maximum=1000)
+    limit = integer_argument("limit", default=9999, minimum=1, maximum=9999)
     offset = integer_argument("offset", default=0, minimum=0, maximum=100000)
     position = request.args.get("position")
     if position:

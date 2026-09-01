@@ -100,7 +100,12 @@ def load_fixture_projections(
     placeholders = ",".join("?" for _ in ids)
     rows = get_database().execute(
         f"""
-        SELECT projection.*, opponent.short_name AS opponent
+        SELECT
+            projection.player_id, projection.fixture_id, projection.gameweek,
+            projection.is_home, projection.xpts, projection.xmins,
+            projection.action_probabilities, projection.expected_actions,
+            projection.xpts_breakdown, projection.outcome_probabilities,
+            opponent.short_name AS opponent
         FROM player_fixture_projections AS projection
         JOIN teams AS opponent ON opponent.id = projection.opponent_team_id
         WHERE projection.player_id IN ({placeholders})
@@ -126,7 +131,6 @@ def load_fixture_projections(
         if detail == "full":
             projection.update({
                 "expected_actions": rounded(load_json(row["expected_actions"]), 3),
-                "model_context": rounded(load_json(row["model_context"])),
             })
         if detail == "full" or include_distribution:
             projection["outcome_probabilities"] = outcome_probabilities(
