@@ -1,0 +1,24 @@
+inference:
+  current_season: 2026-27
+  historical_seasons:
+    - 2022-23
+    - 2023-24
+    - 2024-25
+    - 2025-26
+    - 2026-27
+  fpl_base_url: https://fantasy.premierleague.com/api
+  vaastav_base_url: https://raw.githubusercontent.com/vaastav/Fantasy-Premier-League/master/data
+  timeout_seconds: 30
+  features_path: data/inference/future_features.csv
+  live_context_path: data/inference/live_context.json
+  component_dir: data/inference/components
+  output_path: data/inference/xpts.json
+  simulation_count: 1000
+  random_state: 42
+  model_dirs:
+    team_score: data/models/team_score
+    minutes_state: data/models/minutes_state
+    attacking: data/models/attacking
+    defensive: data/models/defensive
+    misc_events: data/models/misc_events
+    bonus: data/models/bonus
