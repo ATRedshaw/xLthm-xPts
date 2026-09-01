@@ -15,6 +15,33 @@ inference:
   output_path: data/inference/xpts.json
   simulation_count: 1000
   random_state: 42
+  rules:
+    version: 2026-27
+    appearance_under_60: 1
+    appearance_60_plus: 2
+    assist: 3
+    goal:
+      GK: 6
+      DEF: 6
+      MID: 5
+      FWD: 4
+    clean_sheet:
+      GK: 4
+      DEF: 4
+      MID: 1
+      FWD: 0
+    saves_per_point: 3
+    penalty_save: 5
+    goals_conceded_per_deduction: 2
+    defensive_contribution_points: 2
+    defensive_contribution_threshold:
+      DEF: 10
+      MID: 12
+      FWD: 12
+    yellow_card: -1
+    red_card: -3
+    own_goal: -2
+    penalty_miss: -2
   model_dirs:
     team_score: data/models/team_score
     minutes_state: data/models/minutes_state

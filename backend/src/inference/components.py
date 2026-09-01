@@ -57,6 +57,8 @@ def apply_live_availability(feature_rows: pd.DataFrame, predictions: pd.DataFram
     next_round = gameweeks.eq(next_gameweek)
     stated = feature_rows["live_availability_probability"].fillna(1).to_numpy(float)
     applied = np.where(next_round, stated, 1.0)
+    unavailable = feature_rows["live_status"].isin(["u", "n"]).to_numpy()
+    applied = np.where(unavailable, 0.0, applied)
     state_columns = [f"probability_{state}" for state in MINUTES_STATES]
     appeared_columns = [f"probability_{state}" for state in APPEARED_STATES]
     output["base_appearance_probability"] = output[appeared_columns].sum(axis=1)
@@ -157,6 +159,7 @@ def forecast_components(
     bps = build_bps_predictions(
         bonus_inputs, conditional_bps, bonus_artifact["residual_std_by_position"]
     )
+    bps["bps_residual_scale"] = float(bonus_artifact["residual_scale"])
     return {
         "team": team,
         "fixtures": fixtures,

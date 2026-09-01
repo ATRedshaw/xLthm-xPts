@@ -45,7 +45,11 @@ def normalise_live_future_rows(
     retrieved = retrieved_at or datetime.now(timezone.utc)
     teams = {int(team["id"]): team for team in bootstrap["teams"]}
     positions = {
-        int(position["id"]): str(position["singular_name_short"]).upper()
+        int(position["id"]): (
+            "GK"
+            if str(position["singular_name_short"]).upper() == "GKP"
+            else str(position["singular_name_short"]).upper()
+        )
         for position in bootstrap["element_types"]
     }
     remaining = []
