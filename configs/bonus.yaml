@@ -13,7 +13,7 @@ bonus:
     - components
     - components_and_history
     - components_history_and_market
-  random_state: 42
+  random_state: 104
   tuning_simulations: 300
   final_simulations: 1500
   residual_scales:

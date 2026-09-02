@@ -12,7 +12,7 @@ team_score:
   max_goals: 10
   minimum_goal_rate: 0.05
   maximum_goal_rate: 5.0
-  random_state: 42
+  random_state: 104
   dixon_coles_rho:
     minimum: -0.15
     maximum: 0.15
