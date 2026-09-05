@@ -41,7 +41,7 @@ def normalise_live_future_rows(
     season: str,
     retrieved_at: datetime | None = None,
 ) -> tuple[pd.DataFrame, dict[str, object]]:
-    """Return one row for every current player and unfinished team fixture."""
+    """Return player-fixture rows after the active gameweek."""
     retrieved = retrieved_at or datetime.now(timezone.utc)
     teams = {int(team["id"]): team for team in bootstrap["teams"]}
     positions = {
@@ -52,10 +52,26 @@ def normalise_live_future_rows(
         )
         for position in bootstrap["element_types"]
     }
+    excluded_gameweeks = {
+        int(event["id"])
+        for event in bootstrap["events"]
+        if event.get("is_current") and event.get("id") is not None
+    }
+    excluded_gameweeks.update(
+        int(fixture["event"])
+        for fixture in fixtures
+        if fixture.get("event") is not None
+        and (fixture.get("finished") or fixture.get("started"))
+    )
     remaining = []
     skipped = []
     for fixture in fixtures:
-        if fixture.get("finished") or fixture.get("started"):
+        gameweek = fixture.get("event")
+        if (
+            fixture.get("finished")
+            or fixture.get("started")
+            or (gameweek is not None and int(gameweek) in excluded_gameweeks)
+        ):
             continue
         kickoff = _as_utc(fixture.get("kickoff_time"))
         if pd.isna(kickoff):
