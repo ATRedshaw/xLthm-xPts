@@ -1,4 +1,4 @@
-import { Activity, CalendarDays, FlaskConical, UsersRound } from "lucide-react";
+import { CalendarDays, FlaskConical, UsersRound } from "lucide-react";
 import { classNames, formatDateTime, formatRelativeTime } from "../lib/format";
 import type { Metadata, ViewName } from "../types";
 import { BrandMark } from "./ui";
@@ -77,7 +77,6 @@ export function Layout({
         <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-white/[0.08] bg-ink-950/95 px-4 backdrop-blur sm:px-6 lg:h-16 lg:px-8">
           <div className="lg:hidden"><BrandMark /></div>
           <div className="hidden items-center gap-2 text-xs text-stone-500 lg:flex">
-            <Activity className="h-3.5 w-3.5 text-signal-350" />
             <span>Projection workbench</span>
             <span className="text-stone-700">/</span>
             <span className="text-stone-300">{navigation.find((item) => item.id === activeView)?.shortLabel}</span>
