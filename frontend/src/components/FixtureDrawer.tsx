@@ -1,14 +1,43 @@
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { ArrowDown, ArrowUp, Search } from "lucide-react";
 import { api } from "../lib/api";
 import { classNames, formatDateTime, formatPoints, formatPrice, humanise } from "../lib/format";
 import { useRequest } from "../hooks/useRequest";
 import type { Fixture, Position } from "../types";
 import { Drawer, ErrorState, JsonPanel, LoadingState, PositionBadge, ProbabilityBar, TeamBadge } from "./ui";
 
+type SortKey = "name" | "price" | "xmins" | "xpts" | "selected_by";
+type SortDirection = "asc" | "desc";
+
+function SortButton({
+  label,
+  sortKey,
+  activeKey,
+  direction,
+  align = "left",
+  onSort,
+}: {
+  label: string;
+  sortKey: SortKey;
+  activeKey: SortKey;
+  direction: SortDirection;
+  align?: "left" | "right";
+  onSort: (key: SortKey) => void;
+}) {
+  const active = sortKey === activeKey;
+  return (
+    <button className={classNames("flex w-full items-center gap-1.5 hover:text-stone-200", align === "right" && "justify-end")} onClick={() => onSort(sortKey)}>
+      {label}
+      {active && (direction === "desc" ? <ArrowDown className="h-3 w-3 text-signal-350" /> : <ArrowUp className="h-3 w-3 text-signal-350" />)}
+    </button>
+  );
+}
+
 export function FixtureDrawer({ summary, onClose }: { summary: Fixture; onClose: () => void }) {
   const [search, setSearch] = useState("");
   const [position, setPosition] = useState<Position | "ALL">("ALL");
+  const [sortKey, setSortKey] = useState<SortKey>("xpts");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [expandedPlayer, setExpandedPlayer] = useState<number | null>(null);
   const request = useRequest((signal) => api.fixture(summary.fixture, signal), [summary.fixture]);
   const fixture = request.data;
@@ -17,8 +46,25 @@ export function FixtureDrawer({ summary, onClose }: { summary: Fixture; onClose:
     return [...(fixture?.players ?? [])]
       .filter((player) => position === "ALL" || player.position === position)
       .filter((player) => !needle || player.name.toLowerCase().includes(needle))
-      .sort((a, b) => b.projection.xpts - a.projection.xpts);
-  }, [fixture, position, search]);
+      .sort((left, right) => {
+        let comparison = 0;
+        if (sortKey === "name") comparison = left.name.localeCompare(right.name);
+        if (sortKey === "price") comparison = left.price - right.price;
+        if (sortKey === "xmins") comparison = left.projection.xmins - right.projection.xmins;
+        if (sortKey === "xpts") comparison = left.projection.xpts - right.projection.xpts;
+        if (sortKey === "selected_by") comparison = left.selected_by - right.selected_by;
+        return sortDirection === "desc" ? -comparison : comparison;
+      });
+  }, [fixture, position, search, sortDirection, sortKey]);
+
+  function changeSort(key: SortKey) {
+    if (key === sortKey) {
+      setSortDirection((current) => (current === "desc" ? "asc" : "desc"));
+      return;
+    }
+    setSortKey(key);
+    setSortDirection(key === "name" ? "asc" : "desc");
+  }
 
   return (
     <Drawer open wide title={`${summary.home_team} — ${summary.away_team}`} subtitle={`GW ${summary.gameweek} · Fixture ${summary.fixture} · ${formatDateTime(summary.kickoff_time)}`} onClose={onClose}>
@@ -55,7 +101,7 @@ export function FixtureDrawer({ summary, onClose }: { summary: Fixture; onClose:
 
           <section className="p-5 sm:p-6">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-              <div><p className="section-label">Player projections</p><p className="mt-1 text-xs text-stone-500">Sorted by fixture xPts. Open a row for model components.</p></div>
+              <div><p className="section-label">Player projections</p><p className="mt-1 text-xs text-stone-500">Select a heading to sort. Open a row for model components.</p></div>
               <label className="relative sm:w-56"><Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-stone-600" /><input className="field pl-9" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Find a player…" /></label>
             </div>
             <div className="mt-4 flex gap-1">
@@ -64,7 +110,11 @@ export function FixtureDrawer({ summary, onClose }: { summary: Fixture; onClose:
 
             <div className="mt-3 border border-white/[0.08]">
               <div className="grid grid-cols-[1fr_4rem_4rem_4rem] border-b border-white/[0.08] bg-black/10 px-3 py-2 font-mono text-[8px] uppercase tracking-[0.11em] text-stone-600 sm:grid-cols-[1fr_5rem_5rem_5rem_5rem]">
-                <span>Player</span><span className="hidden sm:block">Price</span><span className="text-right">xMins</span><span className="text-right">xPts</span><span className="text-right">Owned</span>
+                <span><SortButton label="Player" sortKey="name" activeKey={sortKey} direction={sortDirection} onSort={changeSort} /></span>
+                <span className="hidden sm:block"><SortButton label="Price" sortKey="price" activeKey={sortKey} direction={sortDirection} onSort={changeSort} /></span>
+                <span><SortButton label="xMins" sortKey="xmins" activeKey={sortKey} direction={sortDirection} align="right" onSort={changeSort} /></span>
+                <span><SortButton label="xPts" sortKey="xpts" activeKey={sortKey} direction={sortDirection} align="right" onSort={changeSort} /></span>
+                <span><SortButton label="Owned" sortKey="selected_by" activeKey={sortKey} direction={sortDirection} align="right" onSort={changeSort} /></span>
               </div>
               {players.map((player) => {
                 const expanded = expandedPlayer === player.id;
