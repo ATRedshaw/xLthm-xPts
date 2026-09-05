@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { CalendarClock, Search } from "lucide-react";
+import { CalendarClock, LoaderCircle, Search } from "lucide-react";
 import { api } from "../lib/api";
 import { formatDateTime, formatPercent } from "../lib/format";
 import { useRequest } from "../hooks/useRequest";
@@ -114,6 +114,11 @@ export function FixturesView({ metadata }: { metadata: Metadata }) {
               {windowOptions.filter((item) => item <= remainingGameweeks).map((item) => <option key={item} value={item}>{item === remainingGameweeks ? `All ${item} GWs` : `${item} GW${item === 1 ? "" : "s"}`}</option>)}
               {!windowOptions.includes(remainingGameweeks) && <option value={remainingGameweeks}>All {remainingGameweeks} GWs</option>}
             </select>
+            {request.loading && request.data && (
+              <span className="hidden items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.1em] text-stone-600 sm:flex" aria-live="polite">
+                <LoaderCircle className="h-3 w-3 animate-spin text-signal-350" /> Updating
+              </span>
+            )}
           </div>
         }
       />
@@ -127,7 +132,7 @@ export function FixturesView({ metadata }: { metadata: Metadata }) {
             { label: "Best clean-sheet", value: bestCleanSheet?.team ?? "—", detail: bestCleanSheet ? formatPercent(bestCleanSheet.value) : undefined },
           ]} />
 
-          <section className="px-4 py-5 sm:px-6 lg:px-8">
+          <section className="px-4 py-5 sm:px-6 lg:px-8" aria-busy={request.loading}>
             <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="section-label">Scheduled rounds</p>

@@ -13,6 +13,7 @@ export default {
           700: "#24202e",
         },
         signal: {
+          300: "#a5efc6",
           350: "#7ce3ad",
           450: "#4dcc88",
         },
