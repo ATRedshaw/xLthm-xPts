@@ -75,6 +75,20 @@
   background-color: rgb(var(--colour-ink-900));
 }
 
+.content-light select.control,
+.content-light select.field {
+  appearance: auto;
+  border-color: rgb(var(--colour-ink-700));
+  background-color: rgb(var(--colour-ink-900));
+  color: rgb(var(--colour-stone-200));
+}
+
+.content-light select.control:hover,
+.content-light select.field:hover {
+  border-color: rgb(var(--colour-stone-500));
+  background-color: rgb(var(--colour-ink-900));
+}
+
 * {
   box-sizing: border-box;
 }
