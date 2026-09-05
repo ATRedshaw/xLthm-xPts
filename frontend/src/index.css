@@ -65,6 +65,16 @@
   color-scheme: light;
 }
 
+.content-light select,
+.content-light option {
+  color-scheme: light;
+}
+
+.content-light option {
+  color: rgb(var(--colour-stone-200));
+  background-color: rgb(var(--colour-ink-900));
+}
+
 * {
   box-sizing: border-box;
 }
