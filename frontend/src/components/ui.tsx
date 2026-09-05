@@ -3,17 +3,10 @@ import { AlertCircle, ChevronRight, RefreshCw, X } from "lucide-react";
 import { classNames, formatPoints, humanise, initials } from "../lib/format";
 import type { Position } from "../types";
 
-export function BrandMark({ compact = false }: { compact?: boolean }) {
+export function BrandMark() {
   return (
-    <div className="flex items-center gap-3" aria-label="xLthm">
-      <span className="grid h-8 w-8 grid-cols-3 items-end gap-1 border border-signal-450/40 bg-signal-450/10 p-1.5">
-        <span className="h-2 bg-signal-350" />
-        <span className="h-4 bg-signal-350" />
-        <span className="h-3 bg-signal-350" />
-      </span>
-      {!compact && (
-        <span className="text-[15px] font-semibold tracking-tight text-white">xLthm</span>
-      )}
+    <div className="flex items-center" aria-label="xLthm">
+      <img className="h-12 w-auto object-contain" src="/logo.png" alt="xLthm" />
     </div>
   );
 }
