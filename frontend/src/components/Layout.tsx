@@ -85,7 +85,7 @@ export function Layout({
             <span className={classNames("h-1.5 w-1.5 rounded-full", healthy === true ? "bg-emerald-400" : healthy === false ? "bg-rose-400" : "bg-stone-600")} />
             <div className="text-right">
               <p className="text-[10px] text-stone-400 sm:text-xs">{healthy === false ? "API unavailable" : "Projection batch"}</p>
-              {metadata && <p className="hidden font-mono text-[9px] text-stone-600 sm:block">{formatDateTime(metadata.generated_at)}</p>}
+              {metadata && <p className="font-mono text-[9px] text-stone-600">{formatDateTime(metadata.generated_at)}</p>}
             </div>
           </div>
         </header>
