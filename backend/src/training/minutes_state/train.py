@@ -891,19 +891,14 @@ def write_artifacts(
             "history remain available."
         ),
         "availability_caveat": (
-            "The processed Vaastav rows do not contain explicit injury status or "
-            "chance-of-playing fields. FPL expected points, weekly price, ownership "
-            "and transfers provide limited pre-match market context but do not "
+            "The processed historical rows do not contain explicit injury status or "
+            "chance-of-playing fields. Weekly price, ownership and transfers provide "
+            "limited pre-match market context but do not "
             "replace a current availability feed."
         ),
-        "fpl_expected_points_mean_by_season": rows.groupby("season")[
-            "feature_fpl_expected_points"
-        ]
-        .mean()
-        .to_dict(),
         "market_feature_caveat": (
-            "FPL expected-points and transfer fields change distribution between "
-            "seasons. Their per-season distributions and all no-market/stable-market "
+            "FPL transfer fields change distribution between seasons. Their "
+            "per-season distributions and all no-market/stable-market "
             "candidate results are retained for drift review."
         ),
     }

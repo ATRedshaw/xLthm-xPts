@@ -147,7 +147,6 @@ def normalise_live_future_rows(
                 "away_team_id": int(fixture["team_a"]),
                 "home_goals": np.nan,
                 "away_goals": np.nan,
-                "fpl_expected_points": pd.to_numeric(player.get("ep_next"), errors="coerce"),
                 "price_tenths": float(player["now_cost"]),
                 "selected": selected,
                 "transfers_balance": float(player.get("transfers_in_event") or 0) - float(player.get("transfers_out_event") or 0),
@@ -278,7 +277,7 @@ def build_future_feature_rows(
     snapshot_columns = [
         "season", "season_start", "player_id", "player_code", "player_key",
         "player_name", "position", "team_id", "team_code", "team_key", "team_name",
-        "fpl_expected_points", "price_tenths", "selected", "transfers_balance",
+        "price_tenths", "selected", "transfers_balance",
         "transfers_in", "transfers_out", "home_goals", "away_goals", *OUTCOME_COLUMNS,
     ]
     snapshots = future.drop_duplicates("player_key", keep="first")[snapshot_columns]

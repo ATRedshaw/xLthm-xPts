@@ -1,4 +1,4 @@
-"""Build the shared component-model training CSV from Vaastav FPL data."""
+"""Build the shared component-model training CSV from historical FPL data."""
 
 from __future__ import annotations
 
@@ -12,7 +12,10 @@ import pandas as pd
 import yaml
 
 from .features import build_training_dataset
-from .vaastav import DEFAULT_BASE_URL, load_seasons
+from .fpl import DEFAULT_BASE_URL as FPL_BASE_URL
+from .fpl import fetch_live_fpl, load_current_season
+from .vaastav import DEFAULT_BASE_URL as VAASTAV_BASE_URL
+from .vaastav import load_seasons
 
 
 DEFAULT_CONFIG_PATH = Path(__file__).resolve().parents[3] / "configs" / "preprocessing.yaml"
@@ -79,16 +82,46 @@ def run_preprocessing(
     seasons: Sequence[str],
     output_path: str | Path = DEFAULT_OUTPUT_PATH,
     *,
-    base_url: str = DEFAULT_BASE_URL,
+    current_season: str,
+    vaastav_base_url: str = VAASTAV_BASE_URL,
+    fpl_base_url: str = FPL_BASE_URL,
     timeout: float = 30.0,
+    fpl_attempts: int = 3,
+    fpl_workers: int = 8,
     progress: bool = True,
 ) -> tuple[Path, DatasetSummary]:
     reporter = print if progress else None
-    raw_rows = load_seasons(
-        seasons,
-        base_url=base_url,
-        timeout=timeout,
-        progress=reporter,
+    archived_seasons = [season for season in seasons if season != current_season]
+    frames = []
+    if archived_seasons:
+        frames.append(
+            load_seasons(
+                archived_seasons,
+                base_url=vaastav_base_url,
+                timeout=timeout,
+                progress=reporter,
+            )
+        )
+    if current_season in seasons:
+        live = fetch_live_fpl(
+            base_url=fpl_base_url,
+            timeout=timeout,
+            attempts=fpl_attempts,
+        )
+        frames.append(
+            load_current_season(
+                live,
+                season=current_season,
+                base_url=fpl_base_url,
+                timeout=timeout,
+                attempts=fpl_attempts,
+                workers=fpl_workers,
+                progress=reporter,
+            )
+        )
+    raw_rows = pd.concat(frames, ignore_index=True).sort_values(
+        ["kickoff_time", "season", "fixture_id", "player_id"],
+        kind="stable",
     )
     if reporter:
         reporter(f"Building pre-match features for {len(raw_rows):,} player fixtures")
@@ -108,10 +141,16 @@ def _parser() -> argparse.ArgumentParser:
         "--seasons",
         nargs="+",
         default=None,
-        help="Vaastav season folders, for example 2022-23 2023-24.",
+        help="Seasons to include, for example 2022-23 2023-24.",
     )
     parser.add_argument("--output", default=None, help="Processed CSV output path.")
-    parser.add_argument("--base-url", default=None, help="Vaastav data base URL.")
+    parser.add_argument(
+        "--vaastav-base-url", default=None, help="Vaastav archive base URL."
+    )
+    parser.add_argument("--fpl-base-url", default=None, help="Official FPL API URL.")
+    parser.add_argument(
+        "--current-season", default=None, help="Season sourced from the FPL API."
+    )
     parser.add_argument(
         "--timeout", type=float, default=None, help="HTTP timeout per source file."
     )
@@ -128,10 +167,18 @@ def main(argv: Sequence[str] | None = None) -> int:
     if not isinstance(configured_seasons, list) or not configured_seasons:
         raise ValueError("preprocessing.seasons must be a non-empty list")
     seasons = args.seasons or [str(season) for season in configured_seasons]
+    current_season = args.current_season or str(
+        preprocessing_config.get("current_season", seasons[-1])
+    )
     output_path = args.output or str(
         preprocessing_config.get("output_path", DEFAULT_OUTPUT_PATH)
     )
-    base_url = args.base_url or str(source_config.get("base_url", DEFAULT_BASE_URL))
+    vaastav_base_url = args.vaastav_base_url or str(
+        source_config.get("vaastav_base_url", VAASTAV_BASE_URL)
+    )
+    fpl_base_url = args.fpl_base_url or str(
+        source_config.get("fpl_base_url", FPL_BASE_URL)
+    )
     timeout = args.timeout
     if timeout is None:
         timeout = float(source_config.get("timeout_seconds", 30.0))
@@ -140,13 +187,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         path, summary = run_preprocessing(
             seasons,
             output_path,
-            base_url=base_url,
+            current_season=current_season,
+            vaastav_base_url=vaastav_base_url,
+            fpl_base_url=fpl_base_url,
             timeout=timeout,
+            fpl_attempts=int(source_config.get("fpl_request_attempts", 3)),
+            fpl_workers=int(source_config.get("fpl_request_workers", 8)),
         )
     except HTTPError as error:
         raise SystemExit(
             f"Could not retrieve {error.url} (HTTP {error.code}). "
-            "Check the configured Vaastav seasons."
+            "Check the configured historical sources and seasons."
         ) from error
 
     print(

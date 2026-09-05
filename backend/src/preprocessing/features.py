@@ -117,7 +117,6 @@ def _shifted_expanding_sum(
 
 def _snapshot_features(rows: pd.DataFrame) -> pd.DataFrame:
     snapshot_values = [
-        "fpl_expected_points",
         "price_tenths",
         "selected",
         "transfers_balance",
@@ -585,7 +584,6 @@ def build_training_dataset(raw_rows: pd.DataFrame) -> pd.DataFrame:
         {
             "home_goals",
             "away_goals",
-            "fpl_expected_points",
             "price_tenths",
             "selected",
             "transfers_balance",
@@ -607,7 +605,6 @@ def build_training_dataset(raw_rows: pd.DataFrame) -> pd.DataFrame:
         raise ValueError("Every row must have a valid kickoff time")
 
     numeric_columns = [
-        "fpl_expected_points",
         "price_tenths",
         "selected",
         "transfers_balance",

@@ -102,7 +102,6 @@ STABLE_MARKET_FEATURES = [
     "feature_team_position_ownership_rank",
 ]
 VOLATILE_MARKET_FEATURES = [
-    "feature_fpl_expected_points",
     "feature_transfers_in_percent",
     "feature_transfers_out_percent",
     "feature_transfers_balance_percent",

@@ -1,9 +1,12 @@
 source:
-  name: vaastav
-  base_url: https://raw.githubusercontent.com/vaastav/Fantasy-Premier-League/master/data
+  vaastav_base_url: https://raw.githubusercontent.com/vaastav/Fantasy-Premier-League/master/data
+  fpl_base_url: https://fantasy.premierleague.com/api
   timeout_seconds: 30
+  fpl_request_attempts: 3
+  fpl_request_workers: 8
 
 preprocessing:
+  current_season: 2026-27
   seasons:
     - 2022-23
     - 2023-24

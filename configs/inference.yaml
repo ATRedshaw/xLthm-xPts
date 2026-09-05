@@ -9,6 +9,8 @@ inference:
   fpl_base_url: https://fantasy.premierleague.com/api
   vaastav_base_url: https://raw.githubusercontent.com/vaastav/Fantasy-Premier-League/master/data
   timeout_seconds: 30
+  fpl_request_attempts: 3
+  fpl_request_workers: 8
   features_path: data/inference/future_features.csv
   live_context_path: data/inference/live_context.json
   component_dir: data/inference/components

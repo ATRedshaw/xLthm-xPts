@@ -58,7 +58,6 @@ REQUIRED_COLUMNS = {
 }
 
 SNAPSHOT_COLUMNS = {
-    "xP": "fpl_expected_points",
     "value": "price_tenths",
     "selected": "selected",
     "transfers_balance": "transfers_balance",

@@ -11,12 +11,12 @@ import numpy as np
 import pandas as pd
 import yaml
 
+from preprocessing.fpl import DEFAULT_BASE_URL as FPL_BASE_URL
+from preprocessing.fpl import fetch_live_fpl, load_current_season
 from preprocessing.vaastav import DEFAULT_BASE_URL as VAASTAV_BASE_URL
 from preprocessing.vaastav import load_seasons
 
 from .features import build_future_feature_rows, normalise_live_future_rows
-from .fpl_api import DEFAULT_BASE_URL as FPL_BASE_URL
-from .fpl_api import fetch_live_fpl
 
 
 DEFAULT_CONFIG_PATH = Path(__file__).resolve().parents[3] / "configs" / "inference.yaml"
@@ -54,15 +54,41 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     settings = load_settings(args.config)
     timeout = float(settings.get("timeout_seconds", 30))
-    live = fetch_live_fpl(base_url=str(settings.get("fpl_base_url", FPL_BASE_URL)), timeout=timeout)
+    fpl_base_url = str(settings.get("fpl_base_url", FPL_BASE_URL))
+    fpl_attempts = int(settings.get("fpl_request_attempts", 3))
+    fpl_workers = int(settings.get("fpl_request_workers", 8))
+    live = fetch_live_fpl(
+        base_url=fpl_base_url,
+        timeout=timeout,
+        attempts=fpl_attempts,
+    )
     season = str(settings["current_season"])
     future, context = normalise_live_future_rows(live.bootstrap, live.fixtures, season=season)
     seasons = [str(value) for value in settings["historical_seasons"]]
-    historical = load_seasons(
-        seasons,
-        base_url=str(settings.get("vaastav_base_url", VAASTAV_BASE_URL)),
+    archived_seasons = [value for value in seasons if value != season]
+    historical_frames = []
+    if archived_seasons:
+        historical_frames.append(
+            load_seasons(
+                archived_seasons,
+                base_url=str(settings.get("vaastav_base_url", VAASTAV_BASE_URL)),
+                timeout=timeout,
+                progress=print,
+            )
+        )
+    current_history = load_current_season(
+        live,
+        season=season,
+        base_url=fpl_base_url,
         timeout=timeout,
+        attempts=fpl_attempts,
+        workers=fpl_workers,
         progress=print,
+    )
+    historical_frames.append(current_history)
+    historical = pd.concat(historical_frames, ignore_index=True).sort_values(
+        ["kickoff_time", "season", "fixture_id", "player_id"],
+        kind="stable",
     )
     features = build_future_feature_rows(historical, future)
     output_path = Path(args.output or str(settings["features_path"]))
@@ -72,6 +98,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     temporary.replace(output_path)
     context_path = Path(args.context_output or str(settings["live_context_path"]))
     context["historical_seasons"] = seasons
+    context["historical_sources"] = {
+        value: "official_fpl" if value == season else "vaastav" for value in seasons
+    }
+    context["current_season_historical_rows"] = int(len(current_history))
     context["future_player_fixture_rows"] = int(len(features))
     context["future_fixtures"] = int(features[["season", "fixture_id"]].drop_duplicates().shape[0])
     write_json(context_path, context)
