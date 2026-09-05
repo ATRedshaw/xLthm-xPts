@@ -1,16 +1,48 @@
-import { AlertTriangle, CheckCircle2, Copy, Database, FlaskConical, Route } from "lucide-react";
-import { api } from "../lib/api";
-import { formatDate, formatDateTime, humanise } from "../lib/format";
-import { useRequest } from "../hooks/useRequest";
+import { CheckCircle2, Database, Route } from "lucide-react";
+import { formatDateTime, humanise } from "../lib/format";
 import type { Metadata } from "../types";
-import { ErrorState, JsonPanel, LoadingState, PageHeading, StatStrip } from "../components/ui";
+import { PageHeading, StatStrip } from "../components/ui";
 
-function copyText(value: string) {
-  void navigator.clipboard?.writeText(value);
-}
+const methodology = [
+  {
+    stage: "Historical data",
+    description: "Archived player-fixture records are read from Vaastav. The active season, current player status and remaining schedule come from official FPL endpoints. Records are ordered by kickoff time; rolling form is shifted by one fixture, so a training row cannot see its own result.",
+  },
+  {
+    stage: "Training rows",
+    description: "The training set contains one row per player and fixture, with team-level rows derived from the same history. It includes prior minutes and events, team and opponent form, venue, rest, price, ownership and transfers where a model calls for them. Missing history is imputed inside each training fold.",
+  },
+  {
+    stage: "Model selection",
+    description: "Training runs chronologically. Earlier seasons fit each candidate and later seasons score it. Feature sets, gradient-boosting settings, shrinkage and calibration values are chosen from these walk-forward results. Models that depend on team scores or minutes are trained against walk-forward upstream predictions rather than fitted values.",
+  },
+  {
+    stage: "Teams and minutes",
+    description: "A Poisson gradient-boosting model estimates each team's goal rate. The home and away rates feed a Dixon-Coles score matrix, which supplies scoreline, result and clean-sheet probabilities. Separate gradient-boosting classifiers estimate mutually exclusive minutes states; a duration regressor supplies minutes within each appeared state.",
+  },
+  {
+    stage: "Player events",
+    description: "Attacking models estimate player goal and FPL-assist rates for forecast minutes. Goal estimates are rescaled so the players on a team sum to its expected goals; assist shares are calibrated separately. Defensive models use forecast minutes and team strength to estimate clean-sheet exposure, goals conceded, saves, penalty saves and defensive contributions.",
+  },
+  {
+    stage: "Cards and bonus",
+    description: "Yellow cards use a fitted event-rate model. Rarer red cards, own goals and penalty misses rely on player history shrunk towards position rates. The BPS regressor takes the upstream component forecasts and estimates points conditional on appearance, with residual spread learned by position.",
+  },
+  {
+    stage: "Live prediction",
+    description: "Before inference, the same feature builder joins historical form to the official live player and fixture feed. Player status and chance of playing adjust the next gameweek's minutes distribution. Saved models then run in dependency order: team and minutes first, followed by the player-event and BPS forecasts.",
+  },
+  {
+    stage: "Fixture simulation",
+    description: "For each fixture, the simulator draws a scoreline and a minutes state for every player. It assigns sampled goals and assists among players who appear, draws the other events at rates scaled by sampled minutes, and applies the current FPL scoring rules. BPS residuals are sampled for the same appearance outcome before the 3/2/1 bonus tie rules are applied.",
+  },
+  {
+    stage: "Published projections",
+    description: "xPts and xMins are the means of the simulated player outcomes. Fixture samples are added at gameweek level, so double gameweeks retain the combined distribution. Threshold probabilities and percentiles come from those samples. A complete batch is written to a temporary SQLite database and replaces the live database after the write succeeds.",
+  },
+];
 
 export function ModelView({ metadata }: { metadata: Metadata }) {
-  const request = useRequest((signal) => api.directory(signal), []);
   const gameweeks = metadata.coverage.gameweeks;
   const firstGameweek = gameweeks[0];
   const lastGameweek = gameweeks[gameweeks.length - 1];
@@ -20,7 +52,7 @@ export function ModelView({ metadata }: { metadata: Metadata }) {
       <PageHeading
         eyebrow={`Season ${metadata.season} / Inference record`}
         title="Model & API"
-        description="Audit the current inference batch, its component models and quality checks, then inspect the API contract that powers this workbench."
+        description="See how historical FPL records become current player projections, with run details and simulation checks."
       />
       <StatStrip items={[
         { label: "Simulation size", value: metadata.simulation_count.toLocaleString("en-GB"), detail: "outcomes / fixture" },
@@ -29,7 +61,7 @@ export function ModelView({ metadata }: { metadata: Metadata }) {
         { label: "Projection span", value: `GW ${firstGameweek}—${lastGameweek}`, detail: `${gameweeks.length} rounds` },
       ]} />
 
-      <div className="grid gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(280px,.7fr)] lg:px-8">
+      <div className="grid gap-5 px-4 py-5 sm:px-6 lg:grid-cols-[minmax(0,1fr)_280px] lg:px-8">
         <div className="space-y-5">
           <section className="border border-white/[0.08] bg-ink-900">
             <div className="flex items-center gap-3 border-b border-white/[0.08] px-4 py-3">
@@ -54,62 +86,18 @@ export function ModelView({ metadata }: { metadata: Metadata }) {
 
           <section className="border border-white/[0.08] bg-ink-900">
             <div className="flex items-center gap-3 border-b border-white/[0.08] px-4 py-3">
-              <FlaskConical className="h-4 w-4 text-signal-350" />
-              <div><h2 className="text-sm font-medium text-stone-100">Component registry</h2><p className="mt-0.5 text-[10px] text-stone-600">Artifacts used in the current projection run</p></div>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[620px] text-left">
-                <thead><tr className="border-b border-white/[0.08] bg-black/10 font-mono text-[8px] uppercase tracking-[0.11em] text-stone-600"><th className="px-4 py-2.5">Model</th><th className="px-4 py-2.5">Version</th><th className="px-4 py-2.5">Feature profile</th><th className="px-4 py-2.5">Trained</th></tr></thead>
-                <tbody>
-                  {Object.entries(metadata.models).map(([name, model]) => (
-                    <tr key={name} className="border-b border-white/[0.055] last:border-0">
-                      <td className="px-4 py-3"><span className="font-mono text-xs text-stone-200">{humanise(name)}</span><span className="ml-2 text-[9px] text-stone-700">{model.model_type}</span></td>
-                      <td className="px-4 py-3 font-mono text-[10px] text-signal-300">v{model.artifact_version}</td>
-                      <td className="px-4 py-3 font-mono text-[10px] text-stone-500">{model.feature_profile || "—"}</td>
-                      <td className="px-4 py-3 font-mono text-[10px] text-stone-500">{formatDate(model.trained_at)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-
-          <section className="border border-white/[0.08] bg-ink-900">
-            <div className="flex items-center gap-3 border-b border-white/[0.08] px-4 py-3">
               <Route className="h-4 w-4 text-signal-350" />
-              <div><h2 className="text-sm font-medium text-stone-100">Methodology</h2><p className="mt-0.5 text-[10px] text-stone-600">How one simulated match becomes player points</p></div>
+              <div><h2 className="text-sm font-medium text-stone-100">Methodology</h2><p className="mt-0.5 text-[10px] text-stone-600">From source records to published player projections</p></div>
             </div>
             <ol className="divide-y divide-white/[0.06]">
-              {Object.entries(metadata.methodology).map(([stage, description], index) => (
+              {methodology.map(({ stage, description }, index) => (
                 <li key={stage} className="grid grid-cols-[2rem_1fr] gap-3 px-4 py-4">
                   <span className="font-mono text-xs text-signal-350">{String(index + 1).padStart(2, "0")}</span>
-                  <div><h3 className="text-xs font-medium text-stone-200">{humanise(stage)}</h3><p className="mt-1 text-xs leading-5 text-stone-500">{description}</p></div>
+                  <div><h3 className="text-xs font-medium text-stone-200">{stage}</h3><p className="mt-1 text-xs leading-5 text-stone-500">{description}</p></div>
                 </li>
               ))}
             </ol>
           </section>
-
-          {request.loading && !request.data ? <LoadingState label="Loading API contract" /> : request.error ? <ErrorState error={request.error} retry={request.retry} /> : request.data && (
-            <section className="border border-white/[0.08] bg-ink-900">
-              <div className="flex items-center gap-3 border-b border-white/[0.08] px-4 py-3">
-                <Route className="h-4 w-4 text-signal-350" />
-                <div><h2 className="text-sm font-medium text-stone-100">Endpoint index</h2><p className="mt-0.5 text-[10px] text-stone-600">{request.data.name} / {request.data.version}</p></div>
-              </div>
-              <div className="divide-y divide-white/[0.06]">
-                {Object.entries(request.data.endpoints).map(([path, endpoint]) => (
-                  <div key={path} className="grid gap-2 px-4 py-4 sm:grid-cols-[minmax(15rem,.8fr)_1.2fr]">
-                    <div className="flex min-w-0 items-center gap-2">
-                      <span className="border border-signal-350/25 bg-signal-450/[0.07] px-1.5 py-0.5 font-mono text-[8px] text-signal-300">{endpoint.method}</span>
-                      <code className="truncate font-mono text-[10px] text-stone-300">{path}</code>
-                      <button className="text-stone-700 hover:text-stone-300" onClick={() => copyText(path)} aria-label={`Copy ${path}`}><Copy className="h-3 w-3" /></button>
-                    </div>
-                    <div><p className="text-xs leading-5 text-stone-500">{endpoint.description}</p>{endpoint.parameters.length > 0 && <p className="mt-1.5 font-mono text-[8px] leading-4 text-stone-700">{endpoint.parameters.join(" · ")}</p>}</div>
-                  </div>
-                ))}
-              </div>
-              <div className="p-4"><JsonPanel data={request.data} label="Complete API contract" /></div>
-            </section>
-          )}
         </div>
 
         <aside className="space-y-5">
@@ -121,15 +109,6 @@ export function ModelView({ metadata }: { metadata: Metadata }) {
               ))}
             </div>
           </section>
-
-          <section className="border border-amber-300/15 bg-amber-300/[0.025]">
-            <div className="flex items-center gap-3 border-b border-amber-300/10 px-4 py-3"><AlertTriangle className="h-4 w-4 text-amber-300" /><h2 className="text-sm font-medium text-stone-100">Known limitations</h2></div>
-            <ul className="divide-y divide-amber-300/[0.07]">
-              {metadata.limitations.map((limitation, index) => <li key={limitation} className="grid grid-cols-[1.5rem_1fr] gap-2 px-4 py-4 text-xs leading-5 text-stone-500"><span className="font-mono text-[9px] text-amber-300/60">0{index + 1}</span>{limitation}</li>)}
-            </ul>
-          </section>
-
-          <JsonPanel data={metadata} label="Raw batch metadata" />
         </aside>
       </div>
     </>
