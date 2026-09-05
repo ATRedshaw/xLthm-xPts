@@ -33,7 +33,7 @@ function Breakdown({ values }: { values: Record<string, number> }) {
         <div key={key} className="grid grid-cols-[8rem_1fr_3rem] items-center gap-3 text-xs">
           <span className="truncate text-stone-500" title={humanise(key)}>{humanise(key)}</span>
           <div className="h-1 bg-white/[0.07]">
-            <div className={classNames("h-full", value < 0 ? "bg-rose-400" : "bg-violet-450")} style={{ width: `${(Math.abs(value) / maximum) * 100}%` }} />
+            <div className={classNames("h-full", value < 0 ? "bg-rose-400" : "bg-signal-450")} style={{ width: `${(Math.abs(value) / maximum) * 100}%` }} />
           </div>
           <span className={classNames("text-right font-mono tabular-nums", value < 0 ? "text-rose-300" : "text-stone-200")}>{value > 0 ? "+" : ""}{value.toFixed(2)}</span>
         </div>
@@ -50,7 +50,7 @@ function Distribution({ values }: { values: Record<string, number> }) {
       <div className="flex h-44 min-w-[520px] items-end gap-1 border-b border-white/10 px-1">
         {entries.map(([points, probability]) => (
           <div key={points} className="group flex h-full min-w-3 flex-1 flex-col justify-end" title={`${points} pts: ${formatPercent(probability, 1)}`}>
-            <div className="relative bg-violet-450/55 transition-colors group-hover:bg-violet-350" style={{ height: `${Math.max(2, (probability / maximum) * 100)}%` }} />
+            <div className="relative bg-signal-450/55 transition-colors group-hover:bg-signal-350" style={{ height: `${Math.max(2, (probability / maximum) * 100)}%` }} />
             <span className="mt-2 block text-center font-mono text-[7px] text-stone-600">{points}</span>
           </div>
         ))}
@@ -137,7 +137,7 @@ export function PlayerDrawer({
             {tabs.map((item) => {
               const Icon = item.icon;
               return (
-                <button key={item.id} className={classNames("flex items-center gap-2 border-b-2 px-3 py-3 text-xs", tab === item.id ? "border-violet-350 text-white" : "border-transparent text-stone-500 hover:text-stone-300")} onClick={() => setTab(item.id)}>
+                <button key={item.id} className={classNames("flex items-center gap-2 border-b-2 px-3 py-3 text-xs", tab === item.id ? "border-signal-350 text-white" : "border-transparent text-stone-500 hover:text-stone-300")} onClick={() => setTab(item.id)}>
                   <Icon className="h-3.5 w-3.5" />{item.label}
                 </button>
               );
@@ -152,9 +152,9 @@ export function PlayerDrawer({
               </div>
               <div className="flex gap-1 overflow-x-auto pb-1">
                 {player.future_points.map((item) => (
-                  <button key={item.gameweek} className={classNames("min-w-[64px] border px-2 py-2 text-center", selectedGameweek === item.gameweek ? "border-violet-350/50 bg-violet-450/10" : "border-white/[0.08] hover:border-white/20")} onClick={() => { setSelectedGameweek(item.gameweek); setFixtureIndex(0); }}>
+                  <button key={item.gameweek} className={classNames("min-w-[64px] border px-2 py-2 text-center", selectedGameweek === item.gameweek ? "border-signal-350/50 bg-signal-450/10" : "border-white/[0.08] hover:border-white/20")} onClick={() => { setSelectedGameweek(item.gameweek); setFixtureIndex(0); }}>
                     <span className="block font-mono text-[8px] uppercase text-stone-600">GW {item.gameweek}</span>
-                    <span className={classNames("mt-1 block font-mono text-sm", selectedGameweek === item.gameweek ? "text-violet-300" : "text-stone-300")}>{formatPoints(item.xpts)}</span>
+                    <span className={classNames("mt-1 block font-mono text-sm", selectedGameweek === item.gameweek ? "text-signal-300" : "text-stone-300")}>{formatPoints(item.xpts)}</span>
                   </button>
                 ))}
               </div>
@@ -171,14 +171,14 @@ export function PlayerDrawer({
                   <p className="section-label mb-3">GW {selectedGameweek} fixture model</p>
                   {fixtures.length > 1 && (
                     <div className="mb-3 flex gap-1">
-                      {fixtures.map((item, index) => <button key={item.fixture} className={classNames("control", index === fixtureIndex && "border-violet-350/50 text-violet-300")} onClick={() => setFixtureIndex(index)}>{item.opponent} ({item.is_home ? "H" : "A"})</button>)}
+                      {fixtures.map((item, index) => <button key={item.fixture} className={classNames("control", index === fixtureIndex && "border-signal-350/50 text-signal-300")} onClick={() => setFixtureIndex(index)}>{item.opponent} ({item.is_home ? "H" : "A"})</button>)}
                     </div>
                   )}
                   {fixture ? (
                     <div className="border border-white/[0.08]">
                       <div className="grid grid-cols-3 border-b border-white/[0.08] bg-white/[0.018]">
                         <div className="p-3"><p className="text-[9px] uppercase text-stone-600">Opponent</p><p className="mt-1 font-mono text-sm text-stone-200">{fixture.opponent} ({fixture.is_home ? "H" : "A"})</p></div>
-                        <div className="border-l border-white/[0.08] p-3"><p className="text-[9px] uppercase text-stone-600">xPts</p><p className="mt-1 font-mono text-sm text-violet-300">{formatPoints(fixture.xpts)}</p></div>
+                        <div className="border-l border-white/[0.08] p-3"><p className="text-[9px] uppercase text-stone-600">xPts</p><p className="mt-1 font-mono text-sm text-signal-300">{formatPoints(fixture.xpts)}</p></div>
                         <div className="border-l border-white/[0.08] p-3"><p className="text-[9px] uppercase text-stone-600">xMins</p><p className="mt-1 font-mono text-sm text-stone-200">{fixture.xmins.toFixed(1)}</p></div>
                       </div>
                       {fixture.action_probabilities && (
@@ -201,7 +201,7 @@ export function PlayerDrawer({
                   <div className="grid gap-4 sm:grid-cols-2">
                     {Object.entries(gameweek.outcome_probabilities)
                       .filter(([key]) => !["percentiles", "points_distribution"].includes(key))
-                      .map(([key, value]) => <ProbabilityBar key={key} label={humanise(key)} value={value as number} tone={key === "negative_points" ? "red" : "violet"} />)}
+                      .map(([key, value]) => <ProbabilityBar key={key} label={humanise(key)} value={value as number} tone={key === "negative_points" ? "red" : "signal"} />)}
                   </div>
                 </section>
                 <section>

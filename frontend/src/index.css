@@ -40,7 +40,7 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 summary:focus-visible {
-  outline: 2px solid #b69aff;
+  outline: 2px solid #7ce3ad;
   outline-offset: 2px;
 }
 
@@ -54,7 +54,7 @@ summary:focus-visible {
   }
 
   .field {
-    @apply h-9 w-full border border-white/10 bg-black/10 px-3 text-xs text-stone-200 placeholder:text-stone-600 hover:border-white/20 focus:border-violet-350/60 focus:outline-none;
+    @apply h-9 w-full border border-white/10 bg-black/10 px-3 text-xs text-stone-200 placeholder:text-stone-600 hover:border-white/20 focus:border-signal-350/60 focus:outline-none;
   }
 
   .section-label {
@@ -64,7 +64,7 @@ summary:focus-visible {
 
 ::selection {
   color: #fff;
-  background: rgba(139, 92, 246, 0.5);
+  background: rgba(77, 204, 136, 0.45);
 }
 
 ::-webkit-scrollbar {

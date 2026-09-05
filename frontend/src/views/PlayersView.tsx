@@ -51,7 +51,7 @@ function SortButton({
   return (
     <button className="inline-flex items-center gap-1.5 hover:text-stone-200" onClick={() => onSort(sortKey)}>
       {label}
-      {active && (direction === "desc" ? <ArrowDown className="h-3 w-3 text-violet-350" /> : <ArrowUp className="h-3 w-3 text-violet-350" />)}
+      {active && (direction === "desc" ? <ArrowDown className="h-3 w-3 text-signal-350" /> : <ArrowUp className="h-3 w-3 text-signal-350" />)}
     </button>
   );
 }
@@ -179,7 +179,7 @@ export function PlayersView({ metadata }: { metadata: Metadata }) {
                   {positions.map((item) => (
                     <button
                       key={item}
-                      className={classNames("h-8 border px-3 font-mono text-[10px] transition-colors", position === item ? "border-violet-350/50 bg-violet-450/15 text-violet-300" : "border-white/[0.08] text-stone-500 hover:border-white/20 hover:text-stone-300")}
+                      className={classNames("h-8 border px-3 font-mono text-[10px] transition-colors", position === item ? "border-signal-350/50 bg-signal-450/15 text-signal-300" : "border-white/[0.08] text-stone-500 hover:border-white/20 hover:text-stone-300")}
                       onClick={() => setPosition(item)}
                     >
                       {item === "ALL" ? "All positions" : item}
@@ -212,16 +212,16 @@ export function PlayersView({ metadata }: { metadata: Metadata }) {
                           <th className="px-3 py-3">Team</th>
                           <th className="px-3 py-3"><SortButton label="Price" sortKey="price" activeKey={sortKey} direction={sortDirection} onSort={changeSort} /></th>
                           <th className="px-3 py-3"><SortButton label="Owned" sortKey="selected_by" activeKey={sortKey} direction={sortDirection} onSort={changeSort} /></th>
-                          <th className="bg-violet-450/[0.035] px-3 py-3"><SortButton label={`GW${startGameweek} xPts`} sortKey="current_xpts" activeKey={sortKey} direction={sortDirection} onSort={changeSort} /></th>
+                          <th className="bg-signal-450/[0.035] px-3 py-3"><SortButton label={`GW${startGameweek} xPts`} sortKey="current_xpts" activeKey={sortKey} direction={sortDirection} onSort={changeSort} /></th>
                           <th className="px-3 py-3">Next fixture</th>
-                          <th className="bg-violet-450/[0.07] px-3 py-3"><SortButton label={`${effectiveWindow}GW xPts`} sortKey="total_xpts" activeKey={sortKey} direction={sortDirection} onSort={changeSort} /></th>
+                          <th className="bg-signal-450/[0.07] px-3 py-3"><SortButton label={`${effectiveWindow}GW xPts`} sortKey="total_xpts" activeKey={sortKey} direction={sortDirection} onSort={changeSort} /></th>
                         </tr>
                       </thead>
                       <tbody>
                         {visiblePlayers.map((player, index) => (
                           <tr
                             key={player.id}
-                            className="group cursor-pointer border-b border-white/[0.055] text-xs transition-colors last:border-0 hover:bg-violet-450/[0.045]"
+                            className="group cursor-pointer border-b border-white/[0.055] text-xs transition-colors last:border-0 hover:bg-signal-450/[0.045]"
                             onClick={() => setSelectedPlayer(player)}
                             onKeyDown={(event) => { if (event.key === "Enter") setSelectedPlayer(player); }}
                             tabIndex={0}
@@ -239,9 +239,9 @@ export function PlayersView({ metadata }: { metadata: Metadata }) {
                             <td className="px-3 py-2.5"><div className="flex items-center gap-2"><TeamBadge team={player.team} size="sm" /><span className="font-mono text-[10px] text-stone-500">{player.team}</span></div></td>
                             <td className="px-3 py-2.5 font-mono tabular-nums text-stone-300">{formatPrice(player.price)}</td>
                             <td className="px-3 py-2.5 font-mono tabular-nums text-stone-400">{player.selected_by.toFixed(1)}%</td>
-                            <td className="bg-violet-450/[0.02] px-3 py-2.5 font-mono text-sm font-medium tabular-nums text-violet-300">{formatPoints(firstGameweekPoints(player, startGameweek))}</td>
+                            <td className="bg-signal-450/[0.02] px-3 py-2.5 font-mono text-sm font-medium tabular-nums text-signal-300">{formatPoints(firstGameweekPoints(player, startGameweek))}</td>
                             <td className="max-w-40 truncate px-3 py-2.5 font-mono text-[10px] text-stone-500">{fixtureLabel(player, startGameweek)}</td>
-                            <td className="bg-violet-450/[0.045] px-3 py-2.5 font-mono text-sm font-semibold tabular-nums text-white">{formatPoints(player.total_xpts)}</td>
+                            <td className="bg-signal-450/[0.045] px-3 py-2.5 font-mono text-sm font-semibold tabular-nums text-white">{formatPoints(player.total_xpts)}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -250,7 +250,7 @@ export function PlayersView({ metadata }: { metadata: Metadata }) {
 
                   <div className="divide-y divide-white/[0.06] md:hidden">
                     {visiblePlayers.map((player, index) => (
-                      <button key={player.id} className="flex w-full items-center gap-3 p-3 text-left hover:bg-violet-450/[0.045]" onClick={() => setSelectedPlayer(player)}>
+                      <button key={player.id} className="flex w-full items-center gap-3 p-3 text-left hover:bg-signal-450/[0.045]" onClick={() => setSelectedPlayer(player)}>
                         <span className="w-5 font-mono text-[9px] text-stone-600">{index + 1}</span>
                         <PlayerBadge name={player.name} />
                         <span className="min-w-0 flex-1">

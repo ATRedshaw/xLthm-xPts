@@ -45,12 +45,12 @@ export function Layout({
                   className={classNames(
                     "group flex w-full items-center gap-3 border-l-2 px-3 py-2.5 text-left text-sm transition-colors",
                     active
-                      ? "border-violet-350 bg-violet-450/[0.08] text-white"
+                      ? "border-signal-350 bg-signal-450/[0.08] text-white"
                       : "border-transparent text-stone-500 hover:bg-white/[0.025] hover:text-stone-200",
                   )}
                   onClick={() => onNavigate(item.id)}
                 >
-                  <Icon className={classNames("h-4 w-4", active ? "text-violet-350" : "text-stone-600 group-hover:text-stone-400")} />
+                  <Icon className={classNames("h-4 w-4", active ? "text-signal-350" : "text-stone-600 group-hover:text-stone-400")} />
                   {item.label}
                 </button>
               );
@@ -77,7 +77,7 @@ export function Layout({
         <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-white/[0.08] bg-ink-950/95 px-4 backdrop-blur sm:px-6 lg:h-16 lg:px-8">
           <div className="lg:hidden"><BrandMark /></div>
           <div className="hidden items-center gap-2 text-xs text-stone-500 lg:flex">
-            <Activity className="h-3.5 w-3.5 text-violet-350" />
+            <Activity className="h-3.5 w-3.5 text-signal-350" />
             <span>Projection workbench</span>
             <span className="text-stone-700">/</span>
             <span className="text-stone-300">{navigation.find((item) => item.id === activeView)?.shortLabel}</span>
@@ -99,7 +99,7 @@ export function Layout({
           const Icon = item.icon;
           const active = activeView === item.id;
           return (
-            <button key={item.id} className={classNames("flex flex-col items-center gap-1 py-1.5 text-[10px]", active ? "text-violet-350" : "text-stone-600")} onClick={() => onNavigate(item.id)}>
+            <button key={item.id} className={classNames("flex flex-col items-center gap-1 py-1.5 text-[10px]", active ? "text-signal-350" : "text-stone-600")} onClick={() => onNavigate(item.id)}>
               <Icon className="h-4 w-4" />
               {item.shortLabel}
             </button>

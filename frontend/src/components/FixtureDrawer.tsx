@@ -59,7 +59,7 @@ export function FixtureDrawer({ summary, onClose }: { summary: Fixture; onClose:
               <label className="relative sm:w-56"><Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-stone-600" /><input className="field pl-9" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Find a player…" /></label>
             </div>
             <div className="mt-4 flex gap-1">
-              {(["ALL", "GK", "DEF", "MID", "FWD"] as const).map((item) => <button key={item} className={classNames("h-7 border px-2.5 font-mono text-[9px]", position === item ? "border-violet-350/50 bg-violet-450/10 text-violet-300" : "border-white/[0.08] text-stone-600")} onClick={() => setPosition(item)}>{item}</button>)}
+              {(["ALL", "GK", "DEF", "MID", "FWD"] as const).map((item) => <button key={item} className={classNames("h-7 border px-2.5 font-mono text-[9px]", position === item ? "border-signal-350/50 bg-signal-450/10 text-signal-300" : "border-white/[0.08] text-stone-600")} onClick={() => setPosition(item)}>{item}</button>)}
             </div>
 
             <div className="mt-3 border border-white/[0.08]">
@@ -70,11 +70,11 @@ export function FixtureDrawer({ summary, onClose }: { summary: Fixture; onClose:
                 const expanded = expandedPlayer === player.id;
                 return (
                   <div key={player.id} className="border-b border-white/[0.06] last:border-0">
-                    <button className="grid w-full grid-cols-[1fr_4rem_4rem_4rem] items-center px-3 py-2.5 text-left hover:bg-violet-450/[0.035] sm:grid-cols-[1fr_5rem_5rem_5rem_5rem]" onClick={() => setExpandedPlayer(expanded ? null : player.id)}>
+                    <button className="grid w-full grid-cols-[1fr_4rem_4rem_4rem] items-center px-3 py-2.5 text-left hover:bg-signal-450/[0.035] sm:grid-cols-[1fr_5rem_5rem_5rem_5rem]" onClick={() => setExpandedPlayer(expanded ? null : player.id)}>
                       <span className="flex min-w-0 items-center gap-2"><PositionBadge position={player.position} /><span className="truncate text-xs text-stone-200">{player.name}</span><span className="font-mono text-[9px] text-stone-600">{player.team}</span></span>
                       <span className="hidden font-mono text-[10px] text-stone-500 sm:block">{formatPrice(player.price)}</span>
                       <span className="text-right font-mono text-[10px] text-stone-400">{player.projection.xmins.toFixed(1)}</span>
-                      <span className="text-right font-mono text-xs font-medium text-violet-300">{formatPoints(player.projection.xpts)}</span>
+                      <span className="text-right font-mono text-xs font-medium text-signal-300">{formatPoints(player.projection.xpts)}</span>
                       <span className="text-right font-mono text-[10px] text-stone-500">{player.selected_by.toFixed(1)}%</span>
                     </button>
                     {expanded && (

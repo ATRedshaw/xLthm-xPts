@@ -6,10 +6,10 @@ import type { Position } from "../types";
 export function BrandMark({ compact = false }: { compact?: boolean }) {
   return (
     <div className="flex items-center gap-3" aria-label="xPts">
-      <span className="grid h-8 w-8 grid-cols-3 items-end gap-1 border border-violet-450/40 bg-violet-450/10 p-1.5">
-        <span className="h-2 bg-violet-350" />
-        <span className="h-4 bg-violet-350" />
-        <span className="h-3 bg-violet-350" />
+      <span className="grid h-8 w-8 grid-cols-3 items-end gap-1 border border-signal-450/40 bg-signal-450/10 p-1.5">
+        <span className="h-2 bg-signal-350" />
+        <span className="h-4 bg-signal-350" />
+        <span className="h-3 bg-signal-350" />
       </span>
       {!compact && (
         <span className="text-[15px] font-semibold tracking-tight text-white">
@@ -29,7 +29,7 @@ export function TeamBadge({ team, size = "md" }: { team: string; size?: "sm" | "
   return (
     <span
       className={classNames(
-        "grid shrink-0 place-items-center border border-violet-350/25 bg-violet-450/[0.08] font-mono font-semibold tracking-tight text-violet-350",
+        "grid shrink-0 place-items-center border border-signal-350/25 bg-signal-450/[0.08] font-mono font-semibold tracking-tight text-signal-350",
         sizes[size],
       )}
       aria-label={team}
@@ -51,7 +51,7 @@ export function PositionBadge({ position }: { position: Position }) {
   const colours: Record<Position, string> = {
     GK: "border-amber-300/20 bg-amber-300/[0.07] text-amber-200",
     DEF: "border-sky-300/20 bg-sky-300/[0.07] text-sky-200",
-    MID: "border-violet-350/20 bg-violet-350/[0.07] text-violet-300",
+    MID: "border-signal-350/20 bg-signal-350/[0.07] text-signal-300",
     FWD: "border-rose-300/20 bg-rose-300/[0.07] text-rose-200",
   };
   return (
@@ -75,7 +75,7 @@ export function PageHeading({
   return (
     <header className="flex flex-col gap-5 border-b border-white/[0.08] px-4 py-6 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8 lg:py-7">
       <div>
-        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-violet-350">{eyebrow}</p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-signal-350">{eyebrow}</p>
         <h1 className="mt-2 text-2xl font-semibold tracking-[-0.035em] text-white sm:text-3xl">{title}</h1>
         <p className="mt-1.5 max-w-2xl text-sm leading-6 text-stone-400">{description}</p>
       </div>
@@ -104,7 +104,7 @@ export function LoadingState({ label = "Loading projection data" }: { label?: st
   return (
     <div className="grid min-h-[360px] place-items-center px-6 text-center">
       <div>
-        <span className="mx-auto block h-5 w-5 animate-spin rounded-full border-2 border-white/15 border-t-violet-350" />
+        <span className="mx-auto block h-5 w-5 animate-spin rounded-full border-2 border-white/15 border-t-signal-350" />
         <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-stone-500">{label}</p>
       </div>
     </div>
@@ -185,15 +185,15 @@ export function ProbabilityBar({
   label,
   value,
   displayValue,
-  tone = "violet",
+  tone = "signal",
 }: {
   label: string;
   value: number;
   displayValue?: string;
-  tone?: "violet" | "red" | "stone";
+  tone?: "signal" | "red" | "stone";
 }) {
   const colours = {
-    violet: "bg-violet-450",
+    signal: "bg-signal-450",
     red: "bg-rose-400",
     stone: "bg-stone-500",
   };
@@ -240,11 +240,11 @@ export function PointsChart({ values }: { values: Array<{ label: string; value: 
           </g>
         );
       })}
-      <polygon points={area} fill="rgba(152, 113, 244, .08)" />
-      <polyline points={line} fill="none" stroke="#b69aff" strokeWidth="2" strokeLinejoin="round" />
+      <polygon points={area} fill="rgba(77, 204, 136, .08)" />
+      <polyline points={line} fill="none" stroke="#7ce3ad" strokeWidth="2" strokeLinejoin="round" />
       {points.map((point) => (
         <g key={point.label}>
-          <circle cx={point.x} cy={point.y} r="3.5" fill="#0e0c13" stroke="#b69aff" strokeWidth="2" />
+          <circle cx={point.x} cy={point.y} r="3.5" fill="#0e0c13" stroke="#7ce3ad" strokeWidth="2" />
           <text x={point.x} y={height - 7} fill="#78716c" fontSize="9" textAnchor="middle" fontFamily="JetBrains Mono Variable">{point.label}</text>
         </g>
       ))}

@@ -23,7 +23,7 @@ function FixtureRow({ fixture, onOpen }: { fixture: Fixture; onOpen: () => void 
   const probabilities = fixture.forecast.result_probabilities;
   const leader = resultLeader(fixture);
   return (
-    <button className="group w-full border border-white/[0.08] bg-ink-900 p-4 text-left transition-colors hover:border-violet-350/30 hover:bg-violet-450/[0.025]" onClick={onOpen}>
+    <button className="group w-full border border-white/[0.08] bg-ink-900 p-4 text-left transition-colors hover:border-signal-350/30 hover:bg-signal-450/[0.025]" onClick={onOpen}>
       <div className="flex items-center justify-between gap-3">
         <span className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.1em] text-stone-600">
           <CalendarClock className="h-3 w-3" />{formatDateTime(fixture.kickoff_time)}
@@ -47,9 +47,9 @@ function FixtureRow({ fixture, onOpen }: { fixture: Fixture; onOpen: () => void 
         </div>
       </div>
       <div className="mt-5 flex h-1.5 overflow-hidden bg-white/[0.06]" aria-label={`${fixture.home_team} win ${formatPercent(probabilities.home_win)}, draw ${formatPercent(probabilities.draw)}, ${fixture.away_team} win ${formatPercent(probabilities.away_win)}`}>
-        <span className="bg-violet-450" style={{ width: `${probabilities.home_win * 100}%` }} />
+        <span className="bg-signal-450" style={{ width: `${probabilities.home_win * 100}%` }} />
         <span className="bg-stone-500" style={{ width: `${probabilities.draw * 100}%` }} />
-        <span className="bg-violet-350/35" style={{ width: `${probabilities.away_win * 100}%` }} />
+        <span className="bg-signal-350/35" style={{ width: `${probabilities.away_win * 100}%` }} />
       </div>
       <div className="mt-2 flex justify-between font-mono text-[9px] text-stone-600">
         <span>H {formatPercent(probabilities.home_win)}</span>

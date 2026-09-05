@@ -33,7 +33,7 @@ export function ModelView({ metadata }: { metadata: Metadata }) {
         <div className="space-y-5">
           <section className="border border-white/[0.08] bg-ink-900">
             <div className="flex items-center gap-3 border-b border-white/[0.08] px-4 py-3">
-              <Database className="h-4 w-4 text-violet-350" />
+              <Database className="h-4 w-4 text-signal-350" />
               <div><h2 className="text-sm font-medium text-stone-100">Inference batch</h2><p className="mt-0.5 text-[10px] text-stone-600">Reproducibility and source-data timestamps</p></div>
             </div>
             <div className="grid sm:grid-cols-2">
@@ -54,7 +54,7 @@ export function ModelView({ metadata }: { metadata: Metadata }) {
 
           <section className="border border-white/[0.08] bg-ink-900">
             <div className="flex items-center gap-3 border-b border-white/[0.08] px-4 py-3">
-              <FlaskConical className="h-4 w-4 text-violet-350" />
+              <FlaskConical className="h-4 w-4 text-signal-350" />
               <div><h2 className="text-sm font-medium text-stone-100">Component registry</h2><p className="mt-0.5 text-[10px] text-stone-600">Artifacts used in the current projection run</p></div>
             </div>
             <div className="overflow-x-auto">
@@ -64,7 +64,7 @@ export function ModelView({ metadata }: { metadata: Metadata }) {
                   {Object.entries(metadata.models).map(([name, model]) => (
                     <tr key={name} className="border-b border-white/[0.055] last:border-0">
                       <td className="px-4 py-3"><span className="font-mono text-xs text-stone-200">{humanise(name)}</span><span className="ml-2 text-[9px] text-stone-700">{model.model_type}</span></td>
-                      <td className="px-4 py-3 font-mono text-[10px] text-violet-300">v{model.artifact_version}</td>
+                      <td className="px-4 py-3 font-mono text-[10px] text-signal-300">v{model.artifact_version}</td>
                       <td className="px-4 py-3 font-mono text-[10px] text-stone-500">{model.feature_profile || "—"}</td>
                       <td className="px-4 py-3 font-mono text-[10px] text-stone-500">{formatDate(model.trained_at)}</td>
                     </tr>
@@ -76,13 +76,13 @@ export function ModelView({ metadata }: { metadata: Metadata }) {
 
           <section className="border border-white/[0.08] bg-ink-900">
             <div className="flex items-center gap-3 border-b border-white/[0.08] px-4 py-3">
-              <Route className="h-4 w-4 text-violet-350" />
+              <Route className="h-4 w-4 text-signal-350" />
               <div><h2 className="text-sm font-medium text-stone-100">Methodology</h2><p className="mt-0.5 text-[10px] text-stone-600">How one simulated match becomes player points</p></div>
             </div>
             <ol className="divide-y divide-white/[0.06]">
               {Object.entries(metadata.methodology).map(([stage, description], index) => (
                 <li key={stage} className="grid grid-cols-[2rem_1fr] gap-3 px-4 py-4">
-                  <span className="font-mono text-xs text-violet-350">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="font-mono text-xs text-signal-350">{String(index + 1).padStart(2, "0")}</span>
                   <div><h3 className="text-xs font-medium text-stone-200">{humanise(stage)}</h3><p className="mt-1 text-xs leading-5 text-stone-500">{description}</p></div>
                 </li>
               ))}
@@ -92,14 +92,14 @@ export function ModelView({ metadata }: { metadata: Metadata }) {
           {request.loading && !request.data ? <LoadingState label="Loading API contract" /> : request.error ? <ErrorState error={request.error} retry={request.retry} /> : request.data && (
             <section className="border border-white/[0.08] bg-ink-900">
               <div className="flex items-center gap-3 border-b border-white/[0.08] px-4 py-3">
-                <Route className="h-4 w-4 text-violet-350" />
+                <Route className="h-4 w-4 text-signal-350" />
                 <div><h2 className="text-sm font-medium text-stone-100">Endpoint index</h2><p className="mt-0.5 text-[10px] text-stone-600">{request.data.name} / {request.data.version}</p></div>
               </div>
               <div className="divide-y divide-white/[0.06]">
                 {Object.entries(request.data.endpoints).map(([path, endpoint]) => (
                   <div key={path} className="grid gap-2 px-4 py-4 sm:grid-cols-[minmax(15rem,.8fr)_1.2fr]">
                     <div className="flex min-w-0 items-center gap-2">
-                      <span className="border border-violet-350/25 bg-violet-450/[0.07] px-1.5 py-0.5 font-mono text-[8px] text-violet-300">{endpoint.method}</span>
+                      <span className="border border-signal-350/25 bg-signal-450/[0.07] px-1.5 py-0.5 font-mono text-[8px] text-signal-300">{endpoint.method}</span>
                       <code className="truncate font-mono text-[10px] text-stone-300">{path}</code>
                       <button className="text-stone-700 hover:text-stone-300" onClick={() => copyText(path)} aria-label={`Copy ${path}`}><Copy className="h-3 w-3" /></button>
                     </div>

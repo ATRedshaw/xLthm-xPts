@@ -12,9 +12,9 @@ export default {
           800: "#191621",
           700: "#24202e",
         },
-        violet: {
-          350: "#b69aff",
-          450: "#9871f4",
+        signal: {
+          350: "#7ce3ad",
+          450: "#4dcc88",
         },
       },
       fontFamily: {
