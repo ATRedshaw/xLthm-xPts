@@ -4,7 +4,7 @@ import { api } from "../lib/api";
 import { classNames, formatDateTime, formatPoints, formatPrice, humanise } from "../lib/format";
 import { useRequest } from "../hooks/useRequest";
 import type { Fixture, Position } from "../types";
-import { Drawer, ErrorState, JsonPanel, LoadingState, PositionBadge, ProbabilityBar, TeamBadge } from "./ui";
+import { Drawer, ErrorState, LoadingState, PositionBadge, ProbabilityBar, TeamBadge } from "./ui";
 
 type SortKey = "name" | "price" | "xmins" | "xpts" | "selected_by";
 type SortDirection = "asc" | "desc";
@@ -144,7 +144,6 @@ export function FixtureDrawer({ summary, onClose }: { summary: Fixture; onClose:
               })}
             </div>
             <p className="mt-2 font-mono text-[9px] text-stone-600">{players.length} player records</p>
-            <div className="mt-6"><JsonPanel data={fixture} label="Full fixture API response" /></div>
           </section>
         </div>
       ) : null}
