@@ -5,16 +5,14 @@ import type { Position } from "../types";
 
 export function BrandMark({ compact = false }: { compact?: boolean }) {
   return (
-    <div className="flex items-center gap-3" aria-label="xPts">
+    <div className="flex items-center gap-3" aria-label="xLthm">
       <span className="grid h-8 w-8 grid-cols-3 items-end gap-1 border border-signal-450/40 bg-signal-450/10 p-1.5">
         <span className="h-2 bg-signal-350" />
         <span className="h-4 bg-signal-350" />
         <span className="h-3 bg-signal-350" />
       </span>
       {!compact && (
-        <span className="text-[15px] font-semibold tracking-tight text-white">
-          xPts<span className="font-normal text-stone-500">.lab</span>
-        </span>
+        <span className="text-[15px] font-semibold tracking-tight text-white">xLthm</span>
       )}
     </div>
   );
