@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Layout } from "./components/Layout";
-import { ErrorState, LoadingState } from "./components/ui";
+import { ErrorState, LoadingSkeleton } from "./components/ui";
 import { useRequest } from "./hooks/useRequest";
 import { api } from "./lib/api";
 import type { ViewName } from "./types";
@@ -40,7 +40,7 @@ export default function App() {
       healthy={health.data ? health.data.status === "ok" : health.error ? false : null}
     >
       {metadata.loading && !metadata.data ? (
-        <LoadingState label="Loading inference metadata" />
+        <LoadingSkeleton label="Loading inference metadata" variant={activeView === "fixtures" ? "cards" : "table"} withHeading />
       ) : metadata.error ? (
         <ErrorState error={metadata.error} retry={metadata.retry} />
       ) : metadata.data ? (

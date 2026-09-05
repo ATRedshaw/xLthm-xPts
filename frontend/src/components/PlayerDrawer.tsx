@@ -8,7 +8,7 @@ import {
   Drawer,
   ErrorState,
   KeyValueGrid,
-  LoadingState,
+  LoadingSkeleton,
   PlayerBadge,
   PointsChart,
   PositionBadge,
@@ -95,7 +95,7 @@ export function PlayerDrawer({
   return (
     <Drawer open title={summary.name} subtitle={`${summary.team} · ${summary.position} · Player ${summary.id}`} onClose={onClose}>
       {request.loading && !player ? (
-        <LoadingState label="Running full-detail request" />
+        <LoadingSkeleton label="Running full-detail request" variant="drawer" />
       ) : request.error ? (
         <ErrorState error={request.error} retry={request.retry} />
       ) : player ? (

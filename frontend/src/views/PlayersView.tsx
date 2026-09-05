@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowDown, ArrowUp, LoaderCircle, Search, SlidersHorizontal } from "lucide-react";
+import { ArrowDown, ArrowUp, Search, SlidersHorizontal } from "lucide-react";
 import { api } from "../lib/api";
 import { classNames, formatPoints, formatPrice } from "../lib/format";
 import { useRequest } from "../hooks/useRequest";
@@ -7,7 +7,8 @@ import type { Metadata, Player, Position } from "../types";
 import {
   EmptyState,
   ErrorState,
-  LoadingState,
+  InlineLoadingSkeleton,
+  LoadingSkeleton,
   PageHeading,
   PlayerBadge,
   PositionBadge,
@@ -154,16 +155,14 @@ export function PlayersView({ metadata }: { metadata: Metadata }) {
               </select>
             </label>
             {request.loading && request.data && (
-              <span className="hidden items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.1em] text-stone-600 sm:flex" aria-live="polite">
-                <LoaderCircle className="h-3 w-3 animate-spin text-signal-350" /> Updating
-              </span>
+              <InlineLoadingSkeleton />
             )}
           </div>
         }
       />
 
       {request.loading && !request.data ? (
-        <LoadingState />
+        <LoadingSkeleton />
       ) : request.error ? (
         <ErrorState error={request.error} retry={request.retry} />
       ) : (

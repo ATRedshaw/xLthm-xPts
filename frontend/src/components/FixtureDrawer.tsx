@@ -4,7 +4,7 @@ import { api } from "../lib/api";
 import { classNames, formatDateTime, formatPoints, formatPrice, humanise } from "../lib/format";
 import { useRequest } from "../hooks/useRequest";
 import type { Fixture, Position } from "../types";
-import { Drawer, ErrorState, LoadingState, PositionBadge, ProbabilityBar, TeamBadge } from "./ui";
+import { Drawer, ErrorState, LoadingSkeleton, PositionBadge, ProbabilityBar, TeamBadge } from "./ui";
 
 type SortKey = "name" | "price" | "xmins" | "xpts" | "selected_by";
 type SortDirection = "asc" | "desc";
@@ -68,7 +68,7 @@ export function FixtureDrawer({ summary, onClose }: { summary: Fixture; onClose:
 
   return (
     <Drawer open wide title={`${summary.home_team} — ${summary.away_team}`} subtitle={`GW ${summary.gameweek} · Fixture ${summary.fixture} · ${formatDateTime(summary.kickoff_time)}`} onClose={onClose}>
-      {request.loading && !fixture ? <LoadingState label="Loading fixture detail" /> : request.error ? <ErrorState error={request.error} retry={request.retry} /> : fixture ? (
+      {request.loading && !fixture ? <LoadingSkeleton label="Loading fixture detail" variant="drawer" /> : request.error ? <ErrorState error={request.error} retry={request.retry} /> : fixture ? (
         <div>
           <section className="border-b border-white/[0.08] px-5 py-6 sm:px-6">
             <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">

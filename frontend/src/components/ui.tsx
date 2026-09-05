@@ -91,13 +91,130 @@ export function StatStrip({ items }: { items: Array<{ label: string; value: Reac
   );
 }
 
-export function LoadingState({ label = "Loading projection data" }: { label?: string }) {
+export function Skeleton({ className }: { className?: string }) {
+  return <span className={classNames("block bg-white/[0.07]", className)} aria-hidden="true" />;
+}
+
+export function InlineLoadingSkeleton({ label = "Updating" }: { label?: string }) {
   return (
-    <div className="grid min-h-[360px] place-items-center px-6 text-center">
-      <div>
-        <span className="mx-auto block h-5 w-5 animate-spin rounded-full border-2 border-white/15 border-t-signal-350" />
-        <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-stone-500">{label}</p>
+    <span className="hidden items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.1em] text-stone-600 sm:flex" role="status" aria-live="polite">
+      <Skeleton className="h-2 w-7 animate-pulse motion-reduce:animate-none" />
+      {label}
+    </span>
+  );
+}
+
+function SkeletonStats() {
+  return (
+    <div className="grid border-b border-white/[0.08] bg-white/[0.012] sm:grid-cols-2 lg:grid-cols-4">
+      {Array.from({ length: 4 }, (_, index) => (
+        <div key={index} className="border-b border-white/[0.08] px-4 py-4 last:border-0 sm:px-6 sm:[&:nth-last-child(-n+2)]:border-b-0 lg:border-b-0 lg:border-r lg:last:border-r-0">
+          <Skeleton className="h-2 w-20" />
+          <div className="mt-2 flex items-center gap-2">
+            <Skeleton className="h-5 w-16" />
+            <Skeleton className="h-2.5 w-20" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function TableSkeleton() {
+  return (
+    <section className="px-4 py-5 sm:px-6 lg:px-8">
+      <div className="border border-white/[0.08] bg-ink-900">
+        <div className="flex flex-col gap-3 border-b border-white/[0.08] p-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex gap-1.5">
+            {["w-16", "w-10", "w-11", "w-11"].map((width, index) => <Skeleton key={index} className={classNames("h-8", width)} />)}
+          </div>
+          <div className="flex gap-2"><Skeleton className="h-9 w-full sm:w-64" /><Skeleton className="h-9 w-36" /></div>
+        </div>
+        <div className="divide-y divide-white/[0.06]">
+          {Array.from({ length: 7 }, (_, index) => (
+            <div key={index} className="flex items-center gap-3 px-3 py-2.5">
+              <Skeleton className="h-9 w-9 shrink-0 rounded-full" />
+              <div className="min-w-0 flex-1"><Skeleton className="h-3 w-32 max-w-full" /><Skeleton className="mt-2 h-2 w-16" /></div>
+              <Skeleton className="hidden h-7 w-7 sm:block" />
+              <Skeleton className="hidden h-3 w-14 sm:block" />
+              <Skeleton className="h-4 w-12" />
+            </div>
+          ))}
+        </div>
       </div>
+    </section>
+  );
+}
+
+function CardSkeleton() {
+  return (
+    <section className="px-4 py-5 sm:px-6 lg:px-8">
+      <div className="mb-5 flex items-end justify-between gap-4">
+        <div><Skeleton className="h-2 w-28" /><Skeleton className="mt-2 h-3 w-64 max-w-full" /></div>
+        <Skeleton className="hidden h-9 w-64 sm:block" />
+      </div>
+      <div className="mb-3 flex items-center gap-3"><Skeleton className="h-3 w-12" /><Skeleton className="h-px flex-1" /><Skeleton className="h-2 w-16" /></div>
+      <div className="grid gap-2 xl:grid-cols-2">
+        {Array.from({ length: 4 }, (_, index) => (
+          <div key={index} className="border border-white/[0.08] bg-ink-900 p-4">
+            <div className="flex justify-between"><Skeleton className="h-2 w-28" /><Skeleton className="h-2 w-8" /></div>
+            <div className="mt-5 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2"><Skeleton className="h-9 w-9" /><Skeleton className="h-3 w-16" /></div>
+              <Skeleton className="h-6 w-14" />
+              <div className="flex items-center gap-2"><Skeleton className="h-3 w-16" /><Skeleton className="h-9 w-9" /></div>
+            </div>
+            <Skeleton className="mt-5 h-1.5 w-full" />
+            <div className="mt-2 flex justify-between"><Skeleton className="h-2 w-10" /><Skeleton className="h-2 w-20" /><Skeleton className="h-2 w-10" /></div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function DrawerSkeleton() {
+  return (
+    <div>
+      <div className="flex items-center gap-4 border-b border-white/[0.08] px-5 py-5 sm:px-6">
+        <Skeleton className="h-9 w-9 rounded-full" />
+        <Skeleton className="h-14 w-14" />
+        <div className="flex-1"><Skeleton className="h-3 w-24" /><Skeleton className="mt-2 h-2.5 w-40 max-w-full" /></div>
+        <div><Skeleton className="ml-auto h-7 w-16" /><Skeleton className="mt-2 h-2 w-12" /></div>
+      </div>
+      <div className="grid grid-cols-3 border-b border-white/[0.08]">
+        {Array.from({ length: 3 }, (_, index) => <div key={index} className="border-r border-white/[0.08] px-3 py-3 last:border-0"><Skeleton className="mx-auto h-4 w-14" /><Skeleton className="mx-auto mt-2 h-2 w-16" /></div>)}
+      </div>
+      <div className="flex gap-6 border-b border-white/[0.08] px-5 py-3 sm:px-6">
+        <Skeleton className="h-3 w-16" /><Skeleton className="h-3 w-20" /><Skeleton className="h-3 w-12" />
+      </div>
+      <div className="space-y-6 px-5 py-6 sm:px-6">
+        <div><Skeleton className="h-2 w-20" /><div className="mt-3 flex gap-1">{Array.from({ length: 5 }, (_, index) => <Skeleton key={index} className="h-12 w-16" />)}</div></div>
+        <div><Skeleton className="h-2 w-28" /><Skeleton className="mt-4 h-40 w-full" /></div>
+        <div><Skeleton className="h-2 w-36" /><Skeleton className="mt-4 h-28 w-full" /></div>
+      </div>
+    </div>
+  );
+}
+
+export function LoadingSkeleton({
+  label = "Loading projection data",
+  variant = "table",
+  withHeading = false,
+}: {
+  label?: string;
+  variant?: "table" | "cards" | "drawer";
+  withHeading?: boolean;
+}) {
+  return (
+    <div className="animate-pulse motion-reduce:animate-none" role="status" aria-live="polite">
+      <span className="sr-only">{label}</span>
+      {withHeading && (
+        <header className="flex flex-col gap-5 border-b border-white/[0.08] px-4 py-6 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8 lg:py-7">
+          <div className="w-full"><Skeleton className="h-2 w-28" /><Skeleton className="mt-3 h-8 w-64 max-w-full" /><Skeleton className="mt-3 h-3 w-[34rem] max-w-full" /></div>
+          <div className="flex gap-2"><Skeleton className="h-9 w-28" /><Skeleton className="h-9 w-24" /></div>
+        </header>
+      )}
+      {variant === "drawer" ? <DrawerSkeleton /> : <><SkeletonStats />{variant === "cards" ? <CardSkeleton /> : <TableSkeleton />}</>}
     </div>
   );
 }

@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
-import { CalendarClock, LoaderCircle, Search } from "lucide-react";
+import { CalendarClock, Search } from "lucide-react";
 import { api } from "../lib/api";
 import { formatDateTime, formatPercent } from "../lib/format";
 import { useRequest } from "../hooks/useRequest";
 import type { Fixture, Metadata } from "../types";
-import { EmptyState, ErrorState, LoadingState, PageHeading, StatStrip, TeamBadge } from "../components/ui";
+import { EmptyState, ErrorState, InlineLoadingSkeleton, LoadingSkeleton, PageHeading, StatStrip, TeamBadge } from "../components/ui";
 import { FixtureDrawer } from "../components/FixtureDrawer";
 
 const windowOptions = [1, 3, 5, 10, 38];
@@ -115,15 +115,13 @@ export function FixturesView({ metadata }: { metadata: Metadata }) {
               {!windowOptions.includes(remainingGameweeks) && <option value={remainingGameweeks}>All {remainingGameweeks} GWs</option>}
             </select>
             {request.loading && request.data && (
-              <span className="hidden items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.1em] text-stone-600 sm:flex" aria-live="polite">
-                <LoaderCircle className="h-3 w-3 animate-spin text-signal-350" /> Updating
-              </span>
+              <InlineLoadingSkeleton />
             )}
           </div>
         }
       />
 
-      {request.loading && !request.data ? <LoadingState label="Loading fixture forecasts" /> : request.error ? <ErrorState error={request.error} retry={request.retry} /> : (
+      {request.loading && !request.data ? <LoadingSkeleton label="Loading fixture forecasts" variant="cards" /> : request.error ? <ErrorState error={request.error} retry={request.retry} /> : (
         <>
           <StatStrip items={[
             { label: "Schedule", value: `${fixtures.length}`, detail: `fixtures / ${effectiveWindow} GWs` },
