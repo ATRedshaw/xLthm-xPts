@@ -23,6 +23,7 @@ def player_identity(row: object, *, detail: str = "summary") -> dict[str, object
         "name": row["name"],
         "position": row["position"],
         "team": row["team"],
+        "team_name": row["team_name"],
         "price": row["price"],
         "selected_by": row["selected_by"],
     }
@@ -105,7 +106,7 @@ def load_fixture_projections(
             projection.is_home, projection.xpts, projection.xmins,
             projection.action_probabilities, projection.expected_actions,
             projection.xpts_breakdown, projection.outcome_probabilities,
-            opponent.short_name AS opponent
+            opponent.short_name AS opponent, opponent.name AS opponent_name
         FROM player_fixture_projections AS projection
         JOIN teams AS opponent ON opponent.id = projection.opponent_team_id
         WHERE projection.player_id IN ({placeholders})
@@ -119,6 +120,7 @@ def load_fixture_projections(
         projection = {
             "fixture": row["fixture_id"],
             "opponent": row["opponent"],
+            "opponent_name": row["opponent_name"],
             "is_home": bool(row["is_home"]),
             "xpts": round(row["xpts"], 3),
             "xmins": round(row["xmins"], 1),

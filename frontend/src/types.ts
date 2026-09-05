@@ -24,6 +24,7 @@ export interface OutcomeProbabilities {
 export interface FixtureProjection {
   fixture: number;
   opponent: string;
+  opponent_name: string;
   is_home: boolean;
   xpts: number;
   xmins: number;
@@ -47,6 +48,7 @@ export interface Player {
   name: string;
   position: Position;
   team: string;
+  team_name: string;
   team_id?: number;
   price: number;
   selected_by: number;

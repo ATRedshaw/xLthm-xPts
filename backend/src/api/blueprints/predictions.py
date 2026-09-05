@@ -21,7 +21,8 @@ blueprint = Blueprint("predictions", __name__, url_prefix="/api/v1")
 PLAYER_COLUMNS = """
     player.id, player.code, player.name, player.position, player.team_id,
     player.price, player.selected_by, player.status,
-    player.availability_probability, player.news, team.short_name AS team
+    player.availability_probability, player.news, team.short_name AS team,
+    team.name AS team_name
 """
 
 

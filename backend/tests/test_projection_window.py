@@ -52,6 +52,15 @@ class ProjectionWindowTest(unittest.TestCase):
                 """,
                 [(36,), (37,), (38,)],
             )
+            connection.execute(
+                """
+                INSERT INTO player_fixture_projections (
+                    player_id, fixture_id, gameweek, opponent_team_id, is_home,
+                    xpts, xmins, action_probabilities, expected_actions,
+                    xpts_breakdown, outcome_probabilities, model_context
+                ) VALUES (1, 100, 38, 2, 1, 5.0, 90.0, '{}', '{}', '{}', '{}', '{}')
+                """
+            )
         self.client = create_app({
             "TESTING": True,
             "PREDICTION_DATABASE": str(database_path),
@@ -82,6 +91,19 @@ class ProjectionWindowTest(unittest.TestCase):
         self.assertEqual(fixture["away_team"], "AWY")
         self.assertEqual(fixture["home_team_name"], "Home")
         self.assertEqual(fixture["away_team_name"], "Away")
+
+    def test_players_include_full_team_and_opponent_names(self):
+        response = self.client.get(
+            "/api/v1/players?start_gameweek=38&gameweeks=1"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        player = response.get_json()["players"][0]
+        self.assertEqual(player["team"], "HOM")
+        self.assertEqual(player["team_name"], "Home")
+        fixture = player["future_points"][0]["fixture_projections"][0]
+        self.assertEqual(fixture["opponent"], "AWY")
+        self.assertEqual(fixture["opponent_name"], "Away")
 
     def test_start_gameweek_outside_projection_range_is_rejected(self):
         response = self.client.get(

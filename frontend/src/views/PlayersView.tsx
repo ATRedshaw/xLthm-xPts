@@ -27,11 +27,13 @@ function firstGameweekPoints(player: Player, gameweek: number) {
   return player.future_points.find((item) => item.gameweek === gameweek)?.xpts ?? 0;
 }
 
-function fixtureLabel(player: Player, gameweek: number) {
+function fixtureLabel(player: Player, gameweek: number, expanded = false) {
   const fixtures = player.future_points.find((item) => item.gameweek === gameweek)?.fixture_projections;
   if (!fixtures?.length) return "No fixture";
   return fixtures
-    .map((fixture) => `${fixture.opponent} ${fixture.is_home ? "H" : "A"}`)
+    .map((fixture) => expanded
+      ? `${fixture.opponent_name} (${fixture.is_home ? "H" : "A"})`
+      : `${fixture.opponent} ${fixture.is_home ? "H" : "A"}`)
     .join(" · ");
 }
 
@@ -240,11 +242,11 @@ export function PlayersView({ metadata }: { metadata: Metadata }) {
                                 </div>
                               </div>
                             </td>
-                            <td className="px-3 py-2.5"><div className="flex items-center gap-2"><TeamBadge team={player.team} size="sm" /><span className="font-mono text-[10px] text-stone-500">{player.team}</span></div></td>
+                            <td className="px-3 py-2.5"><div className="flex items-center gap-2"><TeamBadge team={player.team} size="sm" /><span className="font-mono text-[10px] text-stone-500">{player.team_name}</span></div></td>
                             <td className="px-3 py-2.5 font-mono tabular-nums text-stone-300">{formatPrice(player.price)}</td>
                             <td className="px-3 py-2.5 font-mono tabular-nums text-stone-400">{player.selected_by.toFixed(1)}%</td>
                             <td className="bg-signal-450/[0.02] px-3 py-2.5 font-mono text-sm font-medium tabular-nums text-signal-300">{formatPoints(firstGameweekPoints(player, startGameweek))}</td>
-                            <td className="max-w-40 truncate px-3 py-2.5 font-mono text-[10px] text-stone-500">{fixtureLabel(player, startGameweek)}</td>
+                            <td className="max-w-48 truncate px-3 py-2.5 font-mono text-[10px] text-stone-500">{fixtureLabel(player, startGameweek, true)}</td>
                             <td className="bg-signal-450/[0.045] px-3 py-2.5 font-mono text-sm font-semibold tabular-nums text-white">{formatPoints(player.total_xpts)}</td>
                           </tr>
                         ))}
