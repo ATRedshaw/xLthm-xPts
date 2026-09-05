@@ -4,3 +4,6 @@ data/
 __pycache__/
 *.py[cod]
 docs/
+frontend/node_modules/
+frontend/dist/
+frontend/.env
