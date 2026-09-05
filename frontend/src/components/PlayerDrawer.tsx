@@ -7,7 +7,6 @@ import type { FixtureProjection, Player } from "../types";
 import {
   Drawer,
   ErrorState,
-  JsonPanel,
   KeyValueGrid,
   LoadingState,
   PlayerBadge,
@@ -217,14 +216,10 @@ export function PlayerDrawer({
             {tab === "probability" && !gameweek?.outcome_probabilities && <p className="text-sm text-stone-500">No probability distribution is available for this gameweek.</p>}
 
             {tab === "data" && (
-              <>
-                <section>
-                  <p className="section-label mb-3">Expected actions · GW {selectedGameweek}</p>
-                  {fixture?.expected_actions ? <KeyValueGrid values={fixture.expected_actions} /> : <p className="text-xs text-stone-600">No fixture actions available.</p>}
-                </section>
-                {fixture?.outcome_probabilities && <JsonPanel data={fixture.outcome_probabilities} label="Fixture probability payload" />}
-                <JsonPanel data={player} label="Full player API response" />
-              </>
+              <section>
+                <p className="section-label mb-3">Expected actions · GW {selectedGameweek}</p>
+                {fixture?.expected_actions ? <KeyValueGrid values={fixture.expected_actions} /> : <p className="text-xs text-stone-600">No fixture actions available.</p>}
+              </section>
             )}
           </div>
         </>
