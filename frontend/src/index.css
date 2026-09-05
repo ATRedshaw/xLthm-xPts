@@ -3,10 +3,66 @@
 @tailwind utilities;
 
 :root {
+  --colour-white: 255 255 255;
+  --colour-black: 0 0 0;
+  --colour-ink-950: 17 19 24;
+  --colour-ink-900: 23 25 32;
+  --colour-ink-850: 28 31 39;
+  --colour-ink-800: 37 41 51;
+  --colour-ink-700: 52 57 70;
+  --colour-signal-300: 165 239 198;
+  --colour-signal-350: 124 227 173;
+  --colour-signal-450: 77 204 136;
+  --colour-stone-100: 245 245 244;
+  --colour-stone-200: 231 229 228;
+  --colour-stone-300: 214 211 209;
+  --colour-stone-400: 168 162 158;
+  --colour-stone-500: 120 113 108;
+  --colour-stone-600: 87 83 78;
+  --colour-stone-700: 68 64 60;
+  --colour-amber-100: 254 243 199;
+  --colour-amber-200: 253 230 138;
+  --colour-amber-300: 252 211 77;
+  --colour-sky-200: 186 230 253;
+  --colour-sky-300: 125 211 252;
+  --colour-rose-200: 254 205 211;
+  --colour-rose-300: 253 164 175;
+  --colour-rose-400: 251 113 133;
+  --colour-emerald-400: 52 211 153;
   color-scheme: dark;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  background: #09080d;
+  background: #111318;
+}
+
+.content-light {
+  --colour-white: 28 25 23;
+  --colour-black: 255 255 255;
+  --colour-ink-950: 247 247 245;
+  --colour-ink-900: 255 255 255;
+  --colour-ink-850: 250 250 249;
+  --colour-ink-800: 231 229 228;
+  --colour-ink-700: 214 211 209;
+  --colour-signal-300: 15 118 72;
+  --colour-signal-350: 5 127 77;
+  --colour-signal-450: 21 146 88;
+  --colour-stone-100: 28 25 23;
+  --colour-stone-200: 41 37 36;
+  --colour-stone-300: 68 64 60;
+  --colour-stone-400: 87 83 78;
+  --colour-stone-500: 120 113 108;
+  --colour-stone-600: 168 162 158;
+  --colour-stone-700: 214 211 209;
+  --colour-amber-100: 120 53 15;
+  --colour-amber-200: 161 98 7;
+  --colour-amber-300: 217 119 6;
+  --colour-sky-200: 3 105 161;
+  --colour-sky-300: 2 132 199;
+  --colour-rose-200: 190 18 60;
+  --colour-rose-300: 225 29 72;
+  --colour-rose-400: 225 29 72;
+  --colour-emerald-400: 5 150 105;
+  color-scheme: light;
 }
 
 * {
@@ -15,14 +71,14 @@
 
 html {
   min-width: 320px;
-  background: #09080d;
+  background: #111318;
 }
 
 body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
-  background: #09080d;
+  background: #111318;
 }
 
 button,
@@ -40,7 +96,7 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 summary:focus-visible {
-  outline: 2px solid #7ce3ad;
+  outline: 2px solid rgb(var(--colour-signal-350));
   outline-offset: 2px;
 }
 

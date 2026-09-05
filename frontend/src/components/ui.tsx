@@ -155,7 +155,7 @@ export function Drawer({
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true" aria-labelledby={titleId}>
-      <button className="absolute inset-0 cursor-default bg-black/65 backdrop-blur-[2px]" onClick={onClose} aria-label="Close panel" />
+      <button className="absolute inset-0 cursor-default bg-[rgba(0,0,0,0.65)] backdrop-blur-[2px]" onClick={onClose} aria-label="Close panel" />
       <section className={classNames("relative flex h-full w-full flex-col border-l border-white/10 bg-ink-900 shadow-drawer", wide ? "max-w-3xl" : "max-w-xl")}>
         <header className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 px-5 py-4 sm:px-6">
           <div className="min-w-0">

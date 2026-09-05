@@ -34,7 +34,7 @@ export function Layout({
           <BrandMark />
         </div>
         <nav className="flex-1 px-3 py-5" aria-label="Primary navigation">
-          <p className="px-3 font-mono text-[9px] uppercase tracking-[0.18em] text-stone-600">Explore</p>
+          <p className="px-3 font-mono text-[9px] uppercase tracking-[0.18em] text-stone-500">Explore</p>
           <div className="mt-3 space-y-1">
             {navigation.map((item) => {
               const Icon = item.icon;
@@ -46,11 +46,11 @@ export function Layout({
                     "group flex w-full items-center gap-3 border-l-2 px-3 py-2.5 text-left text-sm transition-colors",
                     active
                       ? "border-signal-350 bg-signal-450/[0.08] text-white"
-                      : "border-transparent text-stone-500 hover:bg-white/[0.025] hover:text-stone-200",
+                      : "border-transparent text-stone-400 hover:bg-white/[0.035] hover:text-stone-100",
                   )}
                   onClick={() => onNavigate(item.id)}
                 >
-                  <Icon className={classNames("h-4 w-4", active ? "text-signal-350" : "text-stone-600 group-hover:text-stone-400")} />
+                  <Icon className={classNames("h-4 w-4", active ? "text-signal-350" : "text-stone-500 group-hover:text-stone-300")} />
                   {item.label}
                 </button>
               );
@@ -74,7 +74,7 @@ export function Layout({
       </aside>
 
       <div className="lg:pl-60">
-        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-white/[0.08] bg-ink-950/95 px-4 backdrop-blur sm:px-6 lg:h-16 lg:px-8">
+        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-white/[0.08] bg-ink-900 px-4 sm:px-6 lg:h-16 lg:px-8">
           <div className="lg:hidden"><BrandMark /></div>
           <div className="hidden items-center gap-2 text-xs text-stone-500 lg:flex">
             <span>Projection workbench</span>
@@ -90,15 +90,15 @@ export function Layout({
           </div>
         </header>
 
-        <main className="min-h-[calc(100vh-3.5rem)] pb-20 lg:min-h-[calc(100vh-4rem)] lg:pb-0">{children}</main>
+        <main className="content-light min-h-[calc(100vh-3.5rem)] bg-ink-950 pb-20 text-stone-200 lg:min-h-[calc(100vh-4rem)] lg:pb-0">{children}</main>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 border-t border-white/10 bg-ink-900/95 px-2 pb-[max(0.4rem,env(safe-area-inset-bottom))] pt-1.5 backdrop-blur lg:hidden" aria-label="Primary navigation">
+      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 border-t border-white/10 bg-ink-900 px-2 pb-[max(0.4rem,env(safe-area-inset-bottom))] pt-1.5 lg:hidden" aria-label="Primary navigation">
         {navigation.map((item) => {
           const Icon = item.icon;
           const active = activeView === item.id;
           return (
-            <button key={item.id} className={classNames("flex flex-col items-center gap-1 py-1.5 text-[10px]", active ? "text-signal-350" : "text-stone-600")} onClick={() => onNavigate(item.id)}>
+            <button key={item.id} className={classNames("flex flex-col items-center gap-1 py-1.5 text-[10px]", active ? "text-signal-350" : "text-stone-400")} onClick={() => onNavigate(item.id)}>
               <Icon className="h-4 w-4" />
               {item.shortLabel}
             </button>
