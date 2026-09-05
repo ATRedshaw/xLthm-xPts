@@ -54,6 +54,11 @@ const methodology = [
   },
 ];
 
+const qualityCheckLabels: Record<string, string> = {
+  maximum_sampled_team_goal_mean_error: "Worst team-goal simulation drift",
+  maximum_sampled_player_minutes_mean_error: "Worst player-minutes simulation drift",
+};
+
 export function ModelView({ metadata }: { metadata: Metadata }) {
   const gameweeks = metadata.coverage.gameweeks;
   const firstGameweek = gameweeks[0];
@@ -117,7 +122,7 @@ export function ModelView({ metadata }: { metadata: Metadata }) {
             <div className="flex items-center gap-3 border-b border-white/[0.08] px-4 py-3"><CheckCircle2 className="h-4 w-4 text-emerald-400" /><h2 className="text-sm font-medium text-stone-100">Quality checks</h2></div>
             <div className="divide-y divide-white/[0.06]">
               {Object.entries(metadata.quality_checks).map(([check, value]) => (
-                <div key={check} className="px-4 py-4"><p className="text-[10px] leading-4 text-stone-500">{humanise(check)}</p><p className="mt-2 font-mono text-xl font-medium text-stone-200">{value.toFixed(3)}</p></div>
+                <div key={check} className="px-4 py-4"><p className="text-[10px] leading-4 text-stone-500">{qualityCheckLabels[check] ?? humanise(check)}</p><p className="mt-2 font-mono text-xl font-medium text-stone-200">{value.toFixed(3)}</p></div>
               ))}
             </div>
           </section>

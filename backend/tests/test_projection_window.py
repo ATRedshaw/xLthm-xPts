@@ -71,6 +71,18 @@ class ProjectionWindowTest(unittest.TestCase):
         self.assertEqual(payload["meta"]["end_gameweek"], 38)
         self.assertEqual([fixture["fixture"] for fixture in payload["fixtures"]], [100])
 
+    def test_fixtures_include_full_and_short_team_names(self):
+        response = self.client.get(
+            "/api/v1/fixtures?start_gameweek=38&gameweeks=1"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        fixture = response.get_json()["fixtures"][0]
+        self.assertEqual(fixture["home_team"], "HOM")
+        self.assertEqual(fixture["away_team"], "AWY")
+        self.assertEqual(fixture["home_team_name"], "Home")
+        self.assertEqual(fixture["away_team_name"], "Away")
+
     def test_start_gameweek_outside_projection_range_is_rejected(self):
         response = self.client.get(
             "/api/v1/fixtures?start_gameweek=39&gameweeks=5"

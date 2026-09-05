@@ -67,17 +67,17 @@ export function FixtureDrawer({ summary, onClose }: { summary: Fixture; onClose:
   }
 
   return (
-    <Drawer open wide title={`${summary.home_team} — ${summary.away_team}`} subtitle={`GW ${summary.gameweek} · Fixture ${summary.fixture} · ${formatDateTime(summary.kickoff_time)}`} onClose={onClose}>
+    <Drawer open wide title={`${summary.home_team_name} — ${summary.away_team_name}`} subtitle={`GW ${summary.gameweek} · Fixture ${summary.fixture} · ${formatDateTime(summary.kickoff_time)}`} onClose={onClose}>
       {request.loading && !fixture ? <LoadingSkeleton label="Loading fixture detail" variant="drawer" /> : request.error ? <ErrorState error={request.error} retry={request.retry} /> : fixture ? (
         <div>
           <section className="border-b border-white/[0.08] px-5 py-6 sm:px-6">
-            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
-              <div className="flex flex-col items-center gap-2 sm:flex-row"><TeamBadge team={fixture.home_team} size="lg" /><span className="font-mono text-base font-semibold text-white">{fixture.home_team}</span></div>
+            <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4">
+              <div className="flex min-w-0 flex-col items-center gap-2 sm:flex-row"><TeamBadge team={fixture.home_team} size="lg" /><span className="max-w-full break-words text-center font-mono text-base font-semibold text-white sm:text-left">{fixture.home_team_name}</span></div>
               <div className="text-center">
                 <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-stone-600">Expected goals</p>
                 <p className="mt-2 font-mono text-3xl font-semibold text-white">{fixture.forecast.expected_goals.home.toFixed(2)}<span className="mx-2 text-stone-700">:</span>{fixture.forecast.expected_goals.away.toFixed(2)}</p>
               </div>
-              <div className="flex flex-col-reverse items-center gap-2 sm:flex-row sm:justify-end"><span className="font-mono text-base font-semibold text-white">{fixture.away_team}</span><TeamBadge team={fixture.away_team} size="lg" /></div>
+              <div className="flex min-w-0 flex-col-reverse items-center gap-2 sm:flex-row sm:justify-end"><span className="max-w-full break-words text-center font-mono text-base font-semibold text-white sm:text-right">{fixture.away_team_name}</span><TeamBadge team={fixture.away_team} size="lg" /></div>
             </div>
           </section>
 
@@ -85,16 +85,16 @@ export function FixtureDrawer({ summary, onClose }: { summary: Fixture; onClose:
             <div>
               <p className="section-label mb-4">Match result</p>
               <div className="space-y-4">
-                <ProbabilityBar label={`${fixture.home_team} win`} value={fixture.forecast.result_probabilities.home_win} />
+                <ProbabilityBar label={`${fixture.home_team_name} win`} value={fixture.forecast.result_probabilities.home_win} />
                 <ProbabilityBar label="Draw" value={fixture.forecast.result_probabilities.draw} tone="stone" />
-                <ProbabilityBar label={`${fixture.away_team} win`} value={fixture.forecast.result_probabilities.away_win} />
+                <ProbabilityBar label={`${fixture.away_team_name} win`} value={fixture.forecast.result_probabilities.away_win} />
               </div>
             </div>
             <div>
               <p className="section-label mb-4">Clean sheet</p>
               <div className="space-y-4">
-                <ProbabilityBar label={fixture.home_team} value={fixture.forecast.clean_sheet_probabilities.home} />
-                <ProbabilityBar label={fixture.away_team} value={fixture.forecast.clean_sheet_probabilities.away} />
+                <ProbabilityBar label={fixture.home_team_name} value={fixture.forecast.clean_sheet_probabilities.home} />
+                <ProbabilityBar label={fixture.away_team_name} value={fixture.forecast.clean_sheet_probabilities.away} />
               </div>
             </div>
           </section>

@@ -78,6 +78,8 @@ export interface Fixture {
   kickoff_time: string;
   home_team: string;
   away_team: string;
+  home_team_name: string;
+  away_team_name: string;
   forecast: FixtureForecast;
 }
 

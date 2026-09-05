@@ -131,6 +131,8 @@ def fixture_response(row: object) -> dict[str, object]:
         "kickoff_time": row["kickoff_time"],
         "home_team": row["home_team"],
         "away_team": row["away_team"],
+        "home_team_name": row["home_team_name"],
+        "away_team_name": row["away_team_name"],
         "forecast": {
             "expected_goals": {
                 "home": round(row["home_expected_goals"], 3),
@@ -150,7 +152,9 @@ def fixture_response(row: object) -> dict[str, object]:
 
 
 FIXTURE_QUERY = """
-    SELECT fixture.*, home.short_name AS home_team, away.short_name AS away_team
+    SELECT fixture.*,
+        home.short_name AS home_team, away.short_name AS away_team,
+        home.name AS home_team_name, away.name AS away_team_name
     FROM fixtures AS fixture
     JOIN teams AS home ON home.id = fixture.home_team_id
     JOIN teams AS away ON away.id = fixture.away_team_id

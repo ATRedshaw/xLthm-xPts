@@ -12,9 +12,9 @@ const windowOptions = [1, 3, 5, 10, 38];
 function resultLeader(fixture: Fixture) {
   const probabilities = fixture.forecast.result_probabilities;
   const entries = [
-    { label: fixture.home_team, value: probabilities.home_win },
+    { label: fixture.home_team_name, value: probabilities.home_win },
     { label: "Draw", value: probabilities.draw },
-    { label: fixture.away_team, value: probabilities.away_win },
+    { label: fixture.away_team_name, value: probabilities.away_win },
   ];
   return entries.sort((a, b) => b.value - a.value)[0];
 }
@@ -30,10 +30,10 @@ function FixtureRow({ fixture, onOpen }: { fixture: Fixture; onOpen: () => void 
         </span>
         <span className="font-mono text-[9px] text-stone-700">#{fixture.fixture}</span>
       </div>
-      <div className="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-        <div className="flex min-w-0 items-center gap-2">
+      <div className="mt-5 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
+        <div className="flex min-w-0 flex-col items-start gap-2 sm:flex-row sm:items-center">
           <TeamBadge team={fixture.home_team} />
-          <span className="truncate font-mono text-sm font-medium text-stone-200">{fixture.home_team}</span>
+          <span className="max-w-full break-words font-mono text-sm font-medium leading-5 text-stone-200">{fixture.home_team_name}</span>
         </div>
         <div className="text-center">
           <p className="font-mono text-[9px] uppercase text-stone-600">model xG</p>
@@ -41,12 +41,12 @@ function FixtureRow({ fixture, onOpen }: { fixture: Fixture; onOpen: () => void 
             {fixture.forecast.expected_goals.home.toFixed(2)}<span className="mx-1.5 text-stone-700">:</span>{fixture.forecast.expected_goals.away.toFixed(2)}
           </p>
         </div>
-        <div className="flex min-w-0 items-center justify-end gap-2">
-          <span className="truncate font-mono text-sm font-medium text-stone-200">{fixture.away_team}</span>
+        <div className="flex min-w-0 flex-col-reverse items-end gap-2 sm:flex-row sm:items-center sm:justify-end">
+          <span className="max-w-full break-words text-right font-mono text-sm font-medium leading-5 text-stone-200">{fixture.away_team_name}</span>
           <TeamBadge team={fixture.away_team} />
         </div>
       </div>
-      <div className="mt-5 flex h-1.5 overflow-hidden bg-white/[0.06]" aria-label={`${fixture.home_team} win ${formatPercent(probabilities.home_win)}, draw ${formatPercent(probabilities.draw)}, ${fixture.away_team} win ${formatPercent(probabilities.away_win)}`}>
+      <div className="mt-5 flex h-1.5 overflow-hidden bg-white/[0.06]" aria-label={`${fixture.home_team_name} win ${formatPercent(probabilities.home_win)}, draw ${formatPercent(probabilities.draw)}, ${fixture.away_team_name} win ${formatPercent(probabilities.away_win)}`}>
         <span className="bg-signal-450" style={{ width: `${probabilities.home_win * 100}%` }} />
         <span className="bg-stone-500" style={{ width: `${probabilities.draw * 100}%` }} />
         <span className="bg-signal-350/35" style={{ width: `${probabilities.away_win * 100}%` }} />
@@ -75,7 +75,7 @@ export function FixturesView({ metadata }: { metadata: Metadata }) {
   const fixtures = useMemo(() => request.data?.fixtures ?? [], [request.data]);
   const filteredFixtures = useMemo(() => {
     const needle = search.trim().toLowerCase();
-    return fixtures.filter((fixture) => !needle || `${fixture.home_team} ${fixture.away_team}`.toLowerCase().includes(needle));
+    return fixtures.filter((fixture) => !needle || `${fixture.home_team_name} ${fixture.home_team} ${fixture.away_team_name} ${fixture.away_team}`.toLowerCase().includes(needle));
   }, [fixtures, search]);
   const groupedFixtures = useMemo(() => {
     return filteredFixtures.reduce<Record<number, Fixture[]>>((groups, fixture) => {
@@ -88,8 +88,8 @@ export function FixturesView({ metadata }: { metadata: Metadata }) {
     : 0;
   const strongestFavourite = [...fixtures].sort((a, b) => resultLeader(b).value - resultLeader(a).value)[0];
   const cleanSheets = fixtures.flatMap((fixture) => [
-    { team: fixture.home_team, value: fixture.forecast.clean_sheet_probabilities.home },
-    { team: fixture.away_team, value: fixture.forecast.clean_sheet_probabilities.away },
+    { team: fixture.home_team_name, value: fixture.forecast.clean_sheet_probabilities.home },
+    { team: fixture.away_team_name, value: fixture.forecast.clean_sheet_probabilities.away },
   ]);
   const bestCleanSheet = cleanSheets.sort((a, b) => b.value - a.value)[0];
 
