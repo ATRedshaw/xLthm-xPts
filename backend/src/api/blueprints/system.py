@@ -82,7 +82,7 @@ def index():
             "gameweeks": {
                 "type": "integer",
                 "default": "all available gameweeks from start_gameweek",
-                "description": "Number of consecutive gameweeks to return.",
+                "description": "Number of consecutive gameweeks to return. A window past the final available gameweek is shortened to the remaining range.",
             },
             "detail": {
                 "type": "string",

@@ -16,14 +16,18 @@ def integer_argument(
     *,
     default: int,
     minimum: int,
-    maximum: int,
+    maximum: int | None = None,
 ) -> int:
     raw_value = request.args.get(name)
     try:
         value = default if raw_value is None else int(raw_value)
     except ValueError as error:
         raise BadRequest(f"{name} must be an integer") from error
-    if not minimum <= value <= maximum:
+    if value < minimum:
+        if maximum is None:
+            raise BadRequest(f"{name} must be at least {minimum}")
+        raise BadRequest(f"{name} must be between {minimum} and {maximum}")
+    if maximum is not None and value > maximum:
         raise BadRequest(f"{name} must be between {minimum} and {maximum}")
     return value
 
@@ -61,10 +65,10 @@ def projection_window() -> tuple[int, int, int]:
         maximum=last_gameweek,
     )
     remaining_gameweeks = last_gameweek - start_gameweek + 1
-    gameweeks = integer_argument(
+    requested_gameweeks = integer_argument(
         "gameweeks",
         default=remaining_gameweeks,
         minimum=1,
-        maximum=remaining_gameweeks,
     )
+    gameweeks = min(requested_gameweeks, remaining_gameweeks)
     return start_gameweek, start_gameweek + gameweeks - 1, gameweeks
